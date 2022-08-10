@@ -3,7 +3,7 @@ import {NativeEventEmitter, NativeModules} from "react-native";
 import {BleError, Characteristic, Subscription} from "react-native-ble-plx";
 import {DeviceStatus} from "../../models/Ble/DeviceStatus";
 import {BleDevice} from "../../models/Ble/BleDevice";
-
+import { stringToBytes } from "convert-string";
 
 export interface BLECommand {
     deviceId : string,
@@ -92,12 +92,20 @@ class BLEManager {
     }
 
     writeCharacteristicWithResponse = async (command: BLECommand) => {
-        await BleManager.writeWithoutResponse(
+        console.log("get the commmand send req from ble manager +++++++++++++++++++++++")
+        console.log("get the commmand send req from ble char +++++++++++++++++++++++" + command.characteristicUUID)
+        console.log("get the commmand send req from ble service +++++++++++++++++++++++" + command.serviceUUID)
+        console.log("get the commmand send req from ble data +++++++++++++++++++++++" + command.data)
+        const dataSent = stringToBytes("AT#PS");
+        console.log(dataSent[0] + "____________")
+ 
+        await BleManager.write(
             command.deviceId,
             command.serviceUUID,
             command.characteristicUUID,
-            [41, 54, 23, 53, 54]
-        )
+            dataSent
+        ).then( () => console.log("send message to the device +=++++++++ble manager "))
+            .catch(e => console.log(e))
         return true;
     }
     removeDeviceStatusStreamingdata = () => {
@@ -108,7 +116,7 @@ class BLEManager {
         console.log("enable notifi id :" + command.characteristicUUID)
         console.log("enable notifi id :" + command.serviceUUID)
         console.log("enable notifi id :" + command.deviceId)
-        await BleManager.retrieveServices(command.deviceId)
+        await BleManager.retrieveServices(command.deviceId, ['0000ae00-0000-1000-8000-00805f9b34fb'])
         await BleManager.startNotification(
             command.deviceId,
             command.serviceUUID,
