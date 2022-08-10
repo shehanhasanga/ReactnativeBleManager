@@ -1,11 +1,11 @@
-import React, {FC, useCallback} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import {
     FlatList,
     ListRenderItemInfo,
     Modal,
     SafeAreaView,
     Text,
-    StyleSheet, View, TouchableOpacity,
+    StyleSheet, View, TouchableOpacity, RefreshControl,
 } from 'react-native';
 import {BluetoothPeripheral} from '../models/BluetoothPeripheral';
 import CTAButton from './CTAButton';
@@ -40,9 +40,10 @@ const ConnectedDeviceList: FC<ConnectedDeviceListModalProps> = props => {
         )
     }
 
-
     return (
-        <View
+        <View style={{
+            height :'100%'
+        }}
         >
             <FlatList
                 contentContainerStyle={{
@@ -50,6 +51,7 @@ const ConnectedDeviceList: FC<ConnectedDeviceListModalProps> = props => {
                 }}
                 data={props.devices}
                 renderItem={DeviceItemListview}
+
             />
 
         </View>

@@ -1,3 +1,5 @@
+import {getCommandSendingChar, getServiceUUID} from "../../../services/bluetooth/BluetoothConstants";
+
 export enum CommandType {
   STOP = 'STOP',
   START = 'START',
@@ -12,24 +14,39 @@ export enum CommandType {
 
 const CommandContent = (commandType: CommandType): string => {
     switch (commandType) {
-      case CommandType.STOP:
+      // case CommandType.START:
+      //   return "QVQjU1Q"
+      // case CommandType.POWER_OFF:
+      //   return "QVQjT0Y"
+      // case CommandType.PAUSE:
+      //   return "QVQjUFM"
+      // case CommandType.CHANGE_MODE_2:
+      //   return "QVQjTTI"
+      // case CommandType.CHANGE_MODE_1:
+      //   return "QVQjTTE"
+      // case CommandType.CHANGE_INTENSITY_3:
+      //   return "QVQjSTM"
+      // case CommandType.CHANGE_INTENSITY_2:
+      //   return "QVQjSTI"
+      // case CommandType.CHANGE_INTENSITY_1:
+      //   return "QVQjSTE"
 
       case CommandType.START:
-        return "QVQjU1Q"
+        return "AT#ST"
       case CommandType.POWER_OFF:
-        return "QVQjT0Y"
+        return "AT#OF"
       case CommandType.PAUSE:
-        return "QVQjUFM"
+        return "AT#PS"
       case CommandType.CHANGE_MODE_2:
-        return "QVQjTTI"
+        return "AT#M2"
       case CommandType.CHANGE_MODE_1:
-        return "QVQjTTE"
+        return "AT#M1"
       case CommandType.CHANGE_INTENSITY_3:
-        return "QVQjSTM"
+        return "AT#I3"
       case CommandType.CHANGE_INTENSITY_2:
-        return "QVQjSTI"
+        return "AT#I2"
       case CommandType.CHANGE_INTENSITY_1:
-        return "QVQjSTE"
+        return "AT#I1"
     }
 }
 
@@ -52,13 +69,13 @@ class Command {
     return this._type;
   }
   get serviceUUID(): string {
-    return '0000ae00-0000-1000-8000-00805f9b34fb';
+    return getServiceUUID();
   }
 
   set serviceUUID(value: string) {}
 
   get characteristicUUID(): string {
-    return '0000ae01-0000-1000-8000-00805f9b34fb';
+    return getCommandSendingChar();
   }
 
   set characteristicUUID(value: string) {}

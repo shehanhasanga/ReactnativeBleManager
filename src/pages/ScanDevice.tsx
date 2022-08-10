@@ -7,20 +7,15 @@ import {
   Text,
   StyleSheet,
   View,
-  TouchableOpacity, Alert, PermissionsAndroid, ScrollView, RefreshControl, Platform,
+  TouchableOpacity, Alert, PermissionsAndroid,  Platform,
 } from 'react-native';
-import {BluetoothPeripheral} from '../models/BluetoothPeripheral';
-import ConnectedDeviceList from "../components/ConnectedDeviceList";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../store/store";
 import {initiateConnectionAction, startScanDevicesAction, stopScanAction} from "../store/bluetooth/actions";
-import blemanager from "../services/bluetooth/BLEManager";
-import {managePanProps} from "react-native-gesture-handler/lib/typescript/handlers/PanGestureHandler";
+import DeviceListItem from "../components/listItems/DeviceListItem";
 
 
 type ScanDeviceProps = {
-  devices: BluetoothPeripheral[];
-  callback: (id: string) => void;
   navigation : any;
 };
 const ScanDevice: FC<ScanDeviceProps> = props => {
@@ -42,11 +37,13 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
     // scandevice();
   }, [connectedDevices]);
   useEffect( () => {
-    // scandevice();
-    // blemanager.scanForPeripherals(null);
+    toggleScan()
   }, []);
 
   const goback = () => {
+    stopScan();
+    setScanning(false);
+    setRefreshing(false);
     props.navigation.goBack();
   }
 
@@ -60,9 +57,9 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
   const isScanning = useSelector(
       (state: RootState) => state.bluetooth.isScanning,
   );
-  const connectToPeripheral = (id:string, name : string) => {
+  const connectToPeripheral = (id: string, name : string) => {
     setConnectingDeviceId(id)
-    console.log("device id" + id + " __________________")
+
     dispatch(initiateConnectionAction(id, name));
   }
 
@@ -127,11 +124,15 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
         ]
     );
   }
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    scandevice();
+    wait(15000).then(() => {
+      setRefreshing(false)
+      stopScan();
+    });
   }, []);
-
   const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   }
@@ -151,18 +152,18 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
         flexDirection : "column"
       }}
       >
-        <ScrollView style={{
-          flex : 1
-        }}
-            refreshControl={
-              <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-              />
-            }
-        >
+        {/*<ScrollView style={{*/}
+        {/*  flex : 1*/}
+        {/*}}*/}
+        {/*    refreshControl={*/}
+        {/*      <RefreshControl*/}
+        {/*          refreshing={refreshing}*/}
+        {/*          onRefresh={onRefresh}*/}
+        {/*      />*/}
+        {/*    }*/}
+        {/*>*/}
 
-        </ScrollView>
+        {/*</ScrollView>*/}
         <View style={{
           flex : 2,
           paddingVertical : 20,
@@ -200,7 +201,27 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
         <View style={{
           flex : 30
         }}>
-          <ConnectedDeviceList callback={ (id, name) => {connectToPeripheral(id, name)}} devices={devices}/>
+          <View style={{
+            height :'100%'
+          }}
+          >
+            <FlatList
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                contentContainerStyle={{
+                  marginHorizontal : 10
+                }}
+                data={devices}
+                renderItem={({item}) => (
+                    <DeviceListItem
+                        device={item}
+                        callback={(id, name) => {connectToPeripheral(id, name)}}
+                    />
+                )}
+
+            />
+
+          </View>
         </View>
 
 

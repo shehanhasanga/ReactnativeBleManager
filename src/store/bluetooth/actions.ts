@@ -4,6 +4,10 @@ import {
   CommandAck,
   DEVICE_FOUND,
   DeviceFoundAction,
+  DISCONNECT_FROM_DEVICE,
+  DisconnectDeviceAction,
+  DISCONNECTED_FROM_DEVICE,
+  DisconnectedSuccessAction,
   GET_ADAPTER_STATUS,
   GET_DEVICESTATUS,
   GET_SERVICES_INFO,
@@ -15,12 +19,14 @@ import {
   SEND_ADAPTER_STATUS,
   SEND_COMMAND,
   SEND_COMMAND_ACK,
+  SEND_CONNECTION_FAIL,
   SEND_CONNECTION_SUCCESS,
   SEND_DEVICE_STATUS,
   SEND_TIME_VALUE,
   SendAckForCommand,
   SendAdapterStatusAction,
   SendCommand,
+  SendConnectFailAction,
   SendConnectSuccessAction,
   SendDeviceStatusAction,
   SendTimerValues,
@@ -32,6 +38,7 @@ import {
   StopScanAction,
 } from './bluetooth.types';
 import {BleDevice} from '../../models/Ble/BleDevice';
+import {getNotificationChar, getServiceUUID} from "../../services/bluetooth/BluetoothConstants";
 
 export const getAdapterStatus = (): GetAdapterStatus => {
   return {type: GET_ADAPTER_STATUS};
@@ -73,8 +80,8 @@ export const getCurrentDeviceStatusData = (
 ): GetDeviceStatusData => {
   let command: ActionCommand = {
     deviceId: deviceId,
-    serviceUUID: '0000ae00-0000-1000-8000-00805f9b34fb',
-    characteristicUUID: '0000ae02-0000-1000-8000-00805f9b34fb',
+    serviceUUID: getServiceUUID(),
+    characteristicUUID: getNotificationChar(),
     data: '',
     commandType: 'GET_DEVICESTATUS',
   };
@@ -115,6 +122,23 @@ export const initiateConnectionAction = (
   };
 };
 
+export const disconnectDeviceAction = (
+    deviceId: string
+): DisconnectDeviceAction => {
+  return {
+    type: DISCONNECT_FROM_DEVICE,
+    payload: {id: deviceId},
+  };
+};
+
+export const disconnectedSuccessAction = (
+    deviceId :string, success: boolean
+): DisconnectedSuccessAction => {
+  return {
+    type: DISCONNECTED_FROM_DEVICE,
+    payload: {id : deviceId,success},
+  };
+};
 
 // saga initiated actions
 export const sendConnectSuccessAction = (
@@ -123,6 +147,15 @@ export const sendConnectSuccessAction = (
   return {
     type: SEND_CONNECTION_SUCCESS,
     payload: device,
+  };
+};
+
+export const sendConnectFailAction = (
+    success: boolean,
+): SendConnectFailAction => {
+  return {
+    type: SEND_CONNECTION_FAIL,
+    payload: success,
   };
 };
 

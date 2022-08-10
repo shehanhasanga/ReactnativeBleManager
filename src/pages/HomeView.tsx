@@ -22,6 +22,7 @@ import {RootState} from '../store/store';
 import {AdapterState} from '../services/bluetooth/BluetoothConstants';
 import InfoModal from '../components/modals/InfoModal';
 import DeviceView from './DeviceView';
+import {disconnectDeviceAction, initiateConnectionAction} from "../store/bluetooth/actions";
 type HomeViewProps = {
   devices: BluetoothPeripheral[];
   callback: (id: string) => void;
@@ -37,6 +38,10 @@ const HomeView: FC<HomeViewProps> = props => {
   const devicesAdapterStatus = useSelector(
     (state: RootState) => state.bluetooth.adapterStatus,
   );
+
+  const disconnectDevice = (deviceId :string) => {
+      dispatch(disconnectDeviceAction(deviceId));
+  }
 
   useEffect(() => {
     // getBleStatus()

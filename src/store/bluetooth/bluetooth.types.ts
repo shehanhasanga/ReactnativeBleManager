@@ -13,7 +13,10 @@ export const START_SCAN_DEVICES = 'START_SCAN_DEVICES'
 export const STOP_SCAN_DEVICES = 'STOP_SCAN_DEVICES'
 export const DEVICE_FOUND = 'DEVICE_FOUND'
 export const INITIATE_CONNECTION = 'INITIATE_CONNECTION'
+export const DISCONNECT_FROM_DEVICE = 'DISCONNECT_FROM_DEVICE'
+export const DISCONNECTED_FROM_DEVICE = 'DISCONNECTED_FROM_DEVICE'
 export const SEND_CONNECTION_SUCCESS = 'SEND_CONNECTION_SUCCESS'
+export const SEND_CONNECTION_FAIL = 'SEND_CONNECTION_FAIL'
 export const SEND_DEVICE_STATUS = 'SEND_DEVICE_STATUS'
 export const SEND_ADAPTER_STATUS = 'SEND_ADAPTER_STATUS'
 
@@ -43,7 +46,20 @@ export interface BluetoothState {
     adapterStatus : any;
     devicesStatus: Array<BleDevice>;
     deviceSt : DeviceStatus;
-    timerValue : number
+    timerValue : number,
+    sessionData :
+}
+
+
+export interface TherapyConfig {
+    
+}
+
+export interface Session {
+    deviceId : string,
+    elapseTime: number,
+    totalTime: number,
+    configData :
 }
 
 export interface ActionCommand {
@@ -98,9 +114,12 @@ export type BluetoothAdapterActionTypes =
     | DeviceFoundAction
     | InitiateConnectionAction
     | SendConnectSuccessAction
+    | SendConnectFailAction
     | SendDeviceStatusAction
     | SendAdapterStatusAction
     | SendTimerValues
+    | DisconnectedSuccessAction
+
 export interface StartScanDevicesAction {
     type: typeof START_SCAN_DEVICES
 }
@@ -119,9 +138,25 @@ export interface InitiateConnectionAction {
     payload : any
 }
 
+export interface DisconnectDeviceAction {
+    type: typeof DISCONNECT_FROM_DEVICE
+    payload : any
+}
+
+export interface DisconnectedSuccessAction {
+    type: typeof DISCONNECTED_FROM_DEVICE
+    payload : any
+}
+DISCONNECTED_FROM_DEVICE
+
 export interface SendConnectSuccessAction {
     type: typeof SEND_CONNECTION_SUCCESS
     payload : BleDevice
+}
+
+export interface SendConnectFailAction {
+    type: typeof SEND_CONNECTION_FAIL
+    payload : boolean
 }
 
 export interface SendDeviceStatusAction {

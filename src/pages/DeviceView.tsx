@@ -2,7 +2,7 @@ import React, {FC, useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View,} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../store/store';
-import {sendCommand, startTimerAction} from '../store/bluetooth/actions';
+import {disconnectDeviceAction, sendCommand, startTimerAction} from '../store/bluetooth/actions';
 import Command, {CommandType} from "../models/Ble/commands/Command";
 import {BleDevice} from "../models/Ble/BleDevice";
 import {DeviceStatus} from "../models/Ble/DeviceStatus";
@@ -74,6 +74,9 @@ const DeviceView: FC = ({ route, navigation }) => {
         }
 
     }
+    const disconnectDevice = () => {
+        dispatch(disconnectDeviceAction(deviceId));
+    }
 
     const startTimer = () => {
         dispatch(startTimerAction(20, true))
@@ -83,20 +86,25 @@ const DeviceView: FC = ({ route, navigation }) => {
         dispatch(startTimerAction(20, false))
     }
 
-    const sendStartStopCommand = (pauseFlag : number) => {
-        if(pauseFlag == 1){
+    const sendStartStopCommand = () => {
+        console.log("clicked on btn ++++++++++++++++++++++++++++")
+        if(pauseDeviceFlag == 0){
             sendPauseCommand()
         } else {
             sendStartCommand()
         }
     }
-
+    const goback = () => {
+        navigation.goBack();
+    }
 
   useEffect(() => {
       let filteDevice:(BleDevice | undefined) = connectedDevices.find((device : BleDevice)  => device.id == deviceId)
       console.log(connectedDevices)
       if(filteDevice){
           setSelectedDevice(filteDevice);
+      } else {
+          goback()
       }
 
   }, [connectedDevices])
@@ -319,6 +327,7 @@ const DeviceView: FC = ({ route, navigation }) => {
                         paddingHorizontal: 10,
                         display: 'flex',
                         flexDirection: 'row',
+                        justifyContent:'space-between',
                         alignItems: 'center',
                     }}>
                     <Text
@@ -328,6 +337,19 @@ const DeviceView: FC = ({ route, navigation }) => {
                         }}>
                         Connected Device: {selectedDevice?.name}
                     </Text>
+                    <TouchableOpacity
+                    onPress={() => {disconnectDevice()}}
+                    >
+                        <View style={{
+                            paddingHorizontal: 10,
+                            paddingVertical: 5,
+                            borderRadius : 10,
+                            backgroundColor : "#3f9824",
+                            color: 'white'
+                        }}>
+                            <Text>Disconnect</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={{
@@ -398,7 +420,7 @@ const DeviceView: FC = ({ route, navigation }) => {
                         alignItems : "center"
                     }}>
                         <CircularIconButton callback={() => {sendPowerOffCommand()}} title={"Power Off"} size={CircularBtnSize.NORMAL}/>
-                        <CircularIconButton callback={() => {sendStartStopCommand(pauseDeviceFlag)}} title={pauseDeviceFlag == 1 ? "Start" : "Pause"} size={CircularBtnSize.LARGE}/>
+                        <CircularIconButton callback={() => {sendStartStopCommand()}} title={ "StartPause"} size={CircularBtnSize.LARGE}/>
                         <Text>{timerValue}</Text>
                     </View>
                 </View>

@@ -2,10 +2,13 @@ import {
   BluetoothAdapterActionTypes,
   BluetoothState,
   DEVICE_FOUND,
+  DISCONNECTED_FROM_DEVICE,
   INITIATE_CONNECTION,
   SEND_ADAPTER_STATUS,
+  SEND_CONNECTION_FAIL,
   SEND_CONNECTION_SUCCESS,
-  SEND_DEVICE_STATUS, SEND_TIME_VALUE,
+  SEND_DEVICE_STATUS,
+  SEND_TIME_VALUE,
   START_SCAN_DEVICES,
   STOP_SCAN_DEVICES,
 } from './bluetooth.types';
@@ -20,7 +23,8 @@ const initialState: BluetoothState = {
   isScanning: false,
   adapterStatus: '',
   devicesStatus: [],
-  timerValue : 0
+  timerValue : 0,
+  sessionData: []
 };
 
 const BLEReducer = (
@@ -61,7 +65,23 @@ const BLEReducer = (
       return {
         ...state,
         isConnectingToDevice: false,
+        availableDevices : [],
         connectedDeviceList: state.connectedDeviceList.concat(action.payload),
+      };
+    case DISCONNECTED_FROM_DEVICE:
+      if(action.payload.success){
+        let deviceId = action.payload.id;
+        return {
+          ...state,
+          connectedDeviceList: state.connectedDeviceList.filter(item => item.id !== deviceId),
+        };
+      }
+
+
+    case SEND_CONNECTION_FAIL:
+      return {
+        ...state,
+        isConnectingToDevice: false,
       };
     case SEND_DEVICE_STATUS:
       var device : BleDevice = action.payload

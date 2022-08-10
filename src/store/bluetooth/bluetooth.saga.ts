@@ -6,13 +6,18 @@ import {sagaActionConstants} from './bluetooth.reducer';
 import bluetoothLeManager, {BLECommand} from '../../services/bluetooth/BluetoothLeManager';
 import {
   actionTypes,
-  deviceFoundAction,
+  deviceFoundAction, disconnectedSuccessAction,
   getCurrentDeviceStatusData,
-  sendAckForCommand, sendAdapterStatusAction, sendConnectSuccessAction, sendDeviceStatusAction, sendTimeValues
+  sendAckForCommand,
+  sendAdapterStatusAction,
+  sendConnectFailAction,
+  sendConnectSuccessAction,
+  sendDeviceStatusAction,
+  sendTimeValues
 } from "./actions";
 import {
   ActionCommand,
-  CommandAck,
+  CommandAck, DISCONNECT_FROM_DEVICE,
   GET_ADAPTER_STATUS,
   GET_DEVICESTATUS, INITIATE_CONNECTION,
   SEND_COMMAND,
@@ -61,10 +66,11 @@ function* watchForPeripherals(): Generator<AnyAction, void, TakeableDevice> {
 }
 
 function* stopScanning(action: {
-  type: typeof sagaActionConstants.STOP_SCAN;
+  type: typeof STOP_SCAN_DEVICES;
   payload: string;
 }) {
-  yield call(bluetoothLeManager.stopScanningForPeripherals);
+  // yield call(bluetoothLeManager.stopScanningForPeripherals);
+  yield call(blemanager.stopScanningForPeripherals);
 }
 
 function* getAdapterStatus(action: {
@@ -80,18 +86,23 @@ function* getAdapterStatus(action: {
 
 
 function* connectToPeripheral(action: {
-  type: typeof sagaActionConstants.INITIATE_CONNECTION;
+  type: typeof INITIATE_CONNECTION;
   payload: any;
 }) {
   const peripheralId = action.payload.id;
-  let device: Device = yield call(blemanager.connectToPeripheral, peripheralId);
-  let bleDevice: BleDevice = {
-    id: peripheralId,
-    name: action.payload.name,
+  try{
+    let device: Device = yield call(blemanager.connectToPeripheral, peripheralId);
+    let bleDevice: BleDevice = {
+      id: peripheralId,
+      name: action.payload.name,
+    }
+    yield call(blemanager.stopScanningForPeripherals);
+    yield put(getCurrentDeviceStatusData(peripheralId));
+    yield put(sendConnectSuccessAction(bleDevice));
+  } catch (e) {
+    yield put(sendConnectFailAction(false));
   }
-  yield put(sendConnectSuccessAction(bleDevice))
-  yield call(blemanager.stopScanningForPeripherals);
-  yield put(getCurrentDeviceStatusData(peripheralId));
+
 
 
 
@@ -103,6 +114,19 @@ function* connectToPeripheral(action: {
   // yield put(sendConnectSuccessAction(bleDevice))
   // yield call(bluetoothLeManager.stopScanningForPeripherals);
   // yield put(getCurrentDeviceStatusData(device.id));
+}
+
+function* disconnectFromDevice(action: {
+  type: typeof DISCONNECT_FROM_DEVICE;
+  payload: any;
+}) {
+  const peripheralId = action.payload.id;
+  try{
+    let success: any = yield call(blemanager.disconnectFromPeripheral, peripheralId);
+    yield put(disconnectedSuccessAction(peripheralId, true));
+  } catch (e) {
+    yield put(disconnectedSuccessAction(peripheralId, false));
+  }
 }
 
 function* getAdapterUpdates() {
@@ -270,6 +294,7 @@ export function* bluetoothSaga() {
   yield takeEvery(GET_ADAPTER_STATUS, getAdapterUpdates);
   yield takeEvery(SEND_COMMAND, sendCommand);
   yield takeEvery(GET_DEVICESTATUS, getDeviceStatusUpdates);
+  yield takeEvery(DISCONNECT_FROM_DEVICE, disconnectFromDevice);
 
   yield takeLatest(START_TIMER, timerSaga);
 }

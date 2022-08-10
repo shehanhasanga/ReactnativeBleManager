@@ -1,5 +1,5 @@
 import BleManager from "react-native-ble-manager";
-import {NativeEventEmitter, NativeModules} from "react-native";
+import {NativeEventEmitter, NativeModules, Platform} from "react-native";
 import {BleError, Characteristic, Subscription} from "react-native-ble-plx";
 import {DeviceStatus} from "../../models/Ble/DeviceStatus";
 import {BleDevice} from "../../models/Ble/BleDevice";
@@ -18,6 +18,7 @@ class BLEManager {
     private emiter: any;
     private emiterScan : any;
     private adapterEmiter: any;
+    private controlValue : number = 0
 
     constructor() {
         this.bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', this.handleDiscoverPeripheral);
@@ -62,44 +63,49 @@ class BLEManager {
         this.emiterScan = emiterScan;
 
     };
-
-
-
-
     stopScanningForPeripherals = () => {
         BleManager.stopScan().then(() => {
             console.log("Scan stopped");
         });
+        this.emiterScan = null
     };
 
     connectToPeripheral = async (identifier: string) => {
         console.log("blemanager id" + identifier+ "+++++++++++")
         await BleManager.connect(identifier)
             .then(() => {
-                // Success code
                 console.log("Connected");
             })
-            .catch((error) => {
-                // Failure code
-                console.log(error);
-            });
+    }
+
+    disconnectFromPeripheral = async (identifier: string) => {
+        await BleManager.disconnect(identifier)
+            .then(() => {
+                console.log("DisConnected!");
+            })
     }
 
     handleUpdateValueForCharacteristic = (data) => {
         if(this.emiter){
-            this.emiter(data.value)
+            this.controlValue += 1
+            if(this.controlValue % 2 == 0){
+                this.controlValue = 0
+            } else {
+                this.emiter(data.value)
+            }
         }
     }
+
 
     writeCharacteristicWithResponse = async (command: BLECommand) => {
         console.log("get the commmand send req from ble manager +++++++++++++++++++++++")
         console.log("get the commmand send req from ble char +++++++++++++++++++++++" + command.characteristicUUID)
         console.log("get the commmand send req from ble service +++++++++++++++++++++++" + command.serviceUUID)
         console.log("get the commmand send req from ble data +++++++++++++++++++++++" + command.data)
-        const dataSent = stringToBytes("AT#PS");
+        const dataSent = stringToBytes(command.data);
         console.log(dataSent[0] + "____________")
- 
-        await BleManager.write(
+
+        await BleManager.writeWithoutResponse(
             command.deviceId,
             command.serviceUUID,
             command.characteristicUUID,
@@ -116,7 +122,7 @@ class BLEManager {
         console.log("enable notifi id :" + command.characteristicUUID)
         console.log("enable notifi id :" + command.serviceUUID)
         console.log("enable notifi id :" + command.deviceId)
-        await BleManager.retrieveServices(command.deviceId, ['0000ae00-0000-1000-8000-00805f9b34fb'])
+        await BleManager.retrieveServices(command.deviceId, [command.serviceUUID])
         await BleManager.startNotification(
             command.deviceId,
             command.serviceUUID,
