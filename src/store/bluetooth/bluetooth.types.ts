@@ -47,19 +47,22 @@ export interface BluetoothState {
     devicesStatus: Array<BleDevice>;
     deviceSt : DeviceStatus;
     timerValue : number,
-    sessionData :
+    sessionData :Session
 }
 
 
 export interface TherapyConfig {
-    
+    pattern :  number,
+    itensity : number,
+    time : number
 }
 
 export interface Session {
-    deviceId : string,
+    deviceIdAndroid : string,
+    deviceIdIos : string,
     elapseTime: number,
-    totalTime: number,
-    configData :
+    therapyList : Array<TherapyConfig>,
+    progress: number
 }
 
 export interface ActionCommand {
