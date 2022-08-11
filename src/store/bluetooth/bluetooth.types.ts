@@ -13,6 +13,7 @@ export const START_SCAN_DEVICES = 'START_SCAN_DEVICES'
 export const STOP_SCAN_DEVICES = 'STOP_SCAN_DEVICES'
 export const DEVICE_FOUND = 'DEVICE_FOUND'
 export const INITIATE_CONNECTION = 'INITIATE_CONNECTION'
+export const SCAN_DETACHED_DEVICES = 'SCAN_DETACHED_DEVICES'
 export const DISCONNECT_FROM_DEVICE = 'DISCONNECT_FROM_DEVICE'
 export const DISCONNECTED_FROM_DEVICE = 'DISCONNECTED_FROM_DEVICE'
 export const SEND_CONNECTION_SUCCESS = 'SEND_CONNECTION_SUCCESS'
@@ -47,22 +48,23 @@ export interface BluetoothState {
     devicesStatus: Array<BleDevice>;
     deviceSt : DeviceStatus;
     timerValue : number,
-    sessionData :Session
+    sessionData? :Session
 }
 
 
 export interface TherapyConfig {
     pattern :  number,
     itensity : number,
-    time : number
+    time : number,
+    progress? : number
 }
 
 export interface Session {
     deviceIdAndroid : string,
     deviceIdIos : string,
     elapseTime: number,
-    therapyList : Array<TherapyConfig>,
-    progress: number
+    totalTime? : number,
+    therapyList : Array<TherapyConfig>
 }
 
 export interface ActionCommand {
@@ -140,6 +142,9 @@ export interface InitiateConnectionAction {
     type: typeof INITIATE_CONNECTION
     payload : any
 }
+export interface ScanAndConnectDetachedDevice {
+    type: typeof SCAN_DETACHED_DEVICES
+}
 
 export interface DisconnectDeviceAction {
     type: typeof DISCONNECT_FROM_DEVICE
@@ -150,7 +155,7 @@ export interface DisconnectedSuccessAction {
     type: typeof DISCONNECTED_FROM_DEVICE
     payload : any
 }
-DISCONNECTED_FROM_DEVICE
+
 
 export interface SendConnectSuccessAction {
     type: typeof SEND_CONNECTION_SUCCESS

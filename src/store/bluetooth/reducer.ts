@@ -23,8 +23,7 @@ const initialState: BluetoothState = {
   isScanning: false,
   adapterStatus: '',
   devicesStatus: [],
-  timerValue : 0,
-  sessionData: []
+  timerValue : 0
 };
 
 const BLEReducer = (

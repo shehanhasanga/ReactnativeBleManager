@@ -43,6 +43,7 @@ import InfoModal from "./components/modals/InfoModal";
 import {getAdapterStatus} from "./store/bluetooth/actions";
 import DeviceView from "./pages/DeviceView";
 import Newble from "./pages/Newble";
+import StartTherapyView from "./pages/StartTherapy";
 
 // import {Device} from "react-native-ble-plx";
 
@@ -167,6 +168,9 @@ const Home: FC = () => {
             {/*    }, headerTintColor: '#fff'}  }/>*/}
 
           <Stack.Screen component={HomeView} name={"Main"} options={{headerShown : false}}/>
+            <Stack.Screen component={StartTherapyView} name={'StartTherapyView'} options={{headerStyle:{
+                    backgroundColor : '#353535'
+                }, headerTintColor: '#fff'}  }/>
             <Stack.Screen component={ScanDevice} name={'Scandevice'} options={{headerStyle:{
                     backgroundColor : '#353535'
                 }, headerTintColor: '#fff'}  }/>

@@ -1,4 +1,4 @@
-import BleManager from "react-native-ble-manager";
+import BleManager, {Peripheral} from "react-native-ble-manager";
 import {NativeEventEmitter, NativeModules, Platform} from "react-native";
 import {BleError, Characteristic, Subscription} from "react-native-ble-plx";
 import {DeviceStatus} from "../../models/Ble/DeviceStatus";
@@ -11,18 +11,31 @@ export interface BLECommand {
     serviceUUID :string,
     characteristicUUID : string
 }
-
+export interface AdapterPayload {
+    type : string,
+    data : {bleStatus?: string, deviceId?: string, name? :string, isConnected?: boolean}
+}
+export const  StreamingTypes = {
+    ADAPTER_DATA : "ADAPTER_DATA",
+    DEVICE_DATA : "DEVICE_DATA"
+}
 class BLEManager {
+
     private  BleManagerModule = NativeModules.BleManager;
     private bleManagerEmitter = new NativeEventEmitter(this.BleManagerModule);
     private emiter: any;
     private emiterScan : any;
     private adapterEmiter: any;
     private controlValue : number = 0
+    private disconnectedDevices : Map = new Map<string, string>()
+    private connetingDevices : Map = new Map<string, string>()
+    private detachedDevices :Map = new Map<string, string>()
+    private isScanning: boolean =  false;
 
     constructor() {
         this.bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', this.handleDiscoverPeripheral);
         this.bleManagerEmitter.addListener('BleManagerDidUpdateState', this.handleBleState);
+        this.bleManagerEmitter.addListener('BleManagerDisconnectPeripheral', this.handleDisconnectDevice);
 
         this.bleManagerEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', this.handleUpdateValueForCharacteristic );
         BleManager.start({ showAlert: false }).then(() => {
@@ -32,9 +45,39 @@ class BLEManager {
         BleManager.checkState();
     }
 
+    handleDisconnectDevice = (data) => {
+        if(!this.disconnectedDevices.has(data.peripheral )){
+            this.detachedDevices.set(data.peripheral, data.peripheral)
+        }
+        let deviceName = ''
+        if(this.connetingDevices.has(data.peripheral)){
+            deviceName = this.connetingDevices.get(data.peripheral)
+        } else {
+            deviceName = 'UnKnown'
+        }
+        let adapterPayload : AdapterPayload = {
+            type : StreamingTypes.DEVICE_DATA,
+            data : { deviceId: data.peripheral,name: deviceName, isConnected: false}
+        }
+        this.adapterEmiter({payload :adapterPayload})
+    }
+
+    isDisconnectedDeviceAvailable = (): boolean => {
+       if(this.detachedDevices.size > 0) {
+           return true
+       }
+    }
+
+
+
     handleBleState = (data) => {
+        console.log(data + "state of the device ++++++++++++++++")
         if(this.adapterEmiter){
-            this.adapterEmiter({payload :data.state})
+            let adapterPayload : AdapterPayload = {
+                type : StreamingTypes.ADAPTER_DATA,
+                data : {bleStatus : data.state}
+            }
+            this.adapterEmiter({payload :adapterPayload})
         }
     }
 
@@ -64,24 +107,101 @@ class BLEManager {
 
     };
     stopScanningForPeripherals = () => {
+        this.isScanning = false
         BleManager.stopScan().then(() => {
             console.log("Scan stopped");
         });
         this.emiterScan = null
     };
 
-    connectToPeripheral = async (identifier: string) => {
+    scanAndConnectDetachedDevices = async () => {
+        this.isScanning = true
+        this.scanForPeripherals(null)
+        await this.timeout(5000)
+        this.stopScanningForPeripherals()
+        let bledevices : Peripheral[] =await  BleManager.getDiscoveredPeripherals()
+        let connected: boolean = false
+        let connectedDevice :any = '';
+        if(bledevices.length > 0){
+            console.log("found discoverd device s++++++++" + bledevices.length)
+            console.log("detached device count++++++++" + this.detachedDevices.size)
+            for(const item of this.detachedDevices.keys()){
+                console.log(item + "item in the detached map++++++++++++++++++++++++")
+            }
+            for (let i = 0 ; i < bledevices.length; i++){
+                let deviceDiscoverd : Peripheral = bledevices[i]
+
+                console.log("device id in the for loop " + deviceDiscoverd.id)
+                if(this.detachedDevices.has(deviceDiscoverd.id)){
+                    console.log("found detached device id ++++++++" + deviceDiscoverd.name)
+                    try {
+                        let deviceName =  deviceDiscoverd.name? deviceDiscoverd.name : 'UnKnown'
+                        await this.connectToPeripheral(deviceDiscoverd.id, deviceName)
+                        connected = true
+                        connectedDevice = {id : deviceDiscoverd.id, name : deviceDiscoverd.name}
+                        break
+                    } catch (e) {
+                        continue
+                    }
+
+                }
+            }
+        }
+        return {isconnected : connected ,  connectedDevice}
+    }
+     timeout = (ms) =>  {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    connectToPeripheral = async (identifier: string, name: string) => {
+        if(this.disconnectedDevices.has(identifier)){
+            this.disconnectedDevices.delete(identifier)
+        }
+        this.connetingDevices.set(identifier, name)
         console.log("blemanager id" + identifier+ "+++++++++++")
         await BleManager.connect(identifier)
             .then(() => {
-                console.log("Connected");
+                if(this.disconnectedDevices.has(identifier)){
+                    this.disconnectedDevices.delete(identifier)
+                }
+                if(this.detachedDevices.has(identifier)){
+                    this.detachedDevices.delete(identifier)
+                }
+                let deviceName = ''
+                if(this.connetingDevices.has(identifier)){
+                    deviceName = this.connetingDevices.get(identifier)
+                } else {
+                    deviceName = 'UnKnown'
+                }
+
+                let adapterPayload : AdapterPayload = {
+                    type : StreamingTypes.DEVICE_DATA,
+                    data : { deviceId: identifier, name: deviceName,isConnected: true}
+                }
+                this.adapterEmiter({payload :adapterPayload})
             })
     }
 
     disconnectFromPeripheral = async (identifier: string) => {
+
         await BleManager.disconnect(identifier)
-            .then(() => {
-                console.log("DisConnected!");
+            .then((t) => {
+                if(this.detachedDevices.has(identifier)){
+                    this.detachedDevices.delete(identifier)
+                }
+                this.disconnectedDevices.set(identifier, identifier)
+                // let deviceName = ''
+                // if(this.connetingDevices.has(identifier)){
+                //     deviceName = this.connetingDevices.has(identifier)
+                // } else {
+                //     deviceName = 'UnKnown'
+                // }
+                // let adapterPayload : AdapterPayload = {
+                //     type : StreamingTypes.DEVICE_DATA,
+                //     data : { deviceId: identifier,name: deviceName, isConnected: false}
+                // }
+                // this.adapterEmiter({payload :adapterPayload})
+
+
             })
     }
 

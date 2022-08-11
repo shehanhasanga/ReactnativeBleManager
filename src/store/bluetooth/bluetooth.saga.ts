@@ -1,4 +1,4 @@
-import {Device, Subscription} from 'react-native-ble-plx';
+import {BleManager, Device, Subscription} from 'react-native-ble-plx';
 import {AnyAction} from 'redux';
 import {END, eventChannel, TakeableChannel} from 'redux-saga';
 import {call, put, take, takeEvery,cancelled, takeLatest,fork } from 'redux-saga/effects';
@@ -7,26 +7,26 @@ import bluetoothLeManager, {BLECommand} from '../../services/bluetooth/Bluetooth
 import {
   actionTypes,
   deviceFoundAction, disconnectedSuccessAction,
-  getCurrentDeviceStatusData,
+  getCurrentDeviceStatusData, scanAndConnectDetachedDevice,
   sendAckForCommand,
   sendAdapterStatusAction,
   sendConnectFailAction,
   sendConnectSuccessAction,
   sendDeviceStatusAction,
-  sendTimeValues
+  sendTimeValues, startTimerAction
 } from "./actions";
 import {
   ActionCommand,
   CommandAck, DISCONNECT_FROM_DEVICE,
   GET_ADAPTER_STATUS,
-  GET_DEVICESTATUS, INITIATE_CONNECTION,
+  GET_DEVICESTATUS, INITIATE_CONNECTION, SCAN_DETACHED_DEVICES,
   SEND_COMMAND,
   START_SCAN_DEVICES, START_TIMER, StartTimerAction, STOP_SCAN_DEVICES
 } from "./bluetooth.types";
 import {BleDevice} from "../../models/Ble/BleDevice";
 import {enable} from "react-native-bluetooth-state-manager";
 import {RootState, store} from '../store';
-import blemanager from "../../services/bluetooth/BLEManager";
+import blemanager, {AdapterPayload, StreamingTypes} from "../../services/bluetooth/BLEManager";
 
 type TakeableDevice = {
   payload: {id: string; name: string; serviceUUIDs: string};
@@ -84,6 +84,33 @@ function* getAdapterStatus(action: {
   });
 }
 
+function* scanAndConnectDetachedDevices(action: {
+  type: typeof SCAN_DETACHED_DEVICES;
+  payload: any;
+}) {
+  try{
+    console.log("checking disconnected devices++++++++++++++++")
+    let available: boolean = yield call(blemanager.isDisconnectedDeviceAvailable);
+    if(available){
+      let status: any =  yield  call(blemanager.scanAndConnectDetachedDevices)
+      if(status.isconnected){ // has connect to a detached device
+        console.log("connected to a disconnected devices++++++++++++++++" + status.connectedDevice.name)
+        let bleDevice: BleDevice = {
+          id: status.connectedDevice.id,
+          name: status.connectedDevice.name,
+        }
+        // yield call(blemanager.stopScanningForPeripherals);
+        yield put(getCurrentDeviceStatusData(bleDevice.id));
+        // yield put(sendConnectSuccessAction(bleDevice));
+      }
+    }
+
+  } catch (e) {
+    // yield put(sendConnectFailAction(false));
+  }
+}
+
+
 
 function* connectToPeripheral(action: {
   type: typeof INITIATE_CONNECTION;
@@ -91,14 +118,15 @@ function* connectToPeripheral(action: {
 }) {
   const peripheralId = action.payload.id;
   try{
-    let device: Device = yield call(blemanager.connectToPeripheral, peripheralId);
+    let device: Device = yield call(blemanager.connectToPeripheral, peripheralId,action.payload.name);
     let bleDevice: BleDevice = {
       id: peripheralId,
       name: action.payload.name,
     }
     yield call(blemanager.stopScanningForPeripherals);
     yield put(getCurrentDeviceStatusData(peripheralId));
-    yield put(sendConnectSuccessAction(bleDevice));
+    // yield put(sendConnectSuccessAction(bleDevice));
+    yield put(startTimerAction(200, true));
   } catch (e) {
     yield put(sendConnectFailAction(false));
   }
@@ -123,7 +151,7 @@ function* disconnectFromDevice(action: {
   const peripheralId = action.payload.id;
   try{
     let success: any = yield call(blemanager.disconnectFromPeripheral, peripheralId);
-    yield put(disconnectedSuccessAction(peripheralId, true));
+    // yield put(disconnectedSuccessAction(peripheralId, true));
   } catch (e) {
     yield put(disconnectedSuccessAction(peripheralId, false));
   }
@@ -144,7 +172,23 @@ function* getAdapterUpdates() {
   try {
     while (true) {
       const status = yield take(channel);
-      yield put(sendAdapterStatusAction(status.payload));
+      let payload : AdapterPayload = status.payload
+      if(payload.type == StreamingTypes.ADAPTER_DATA){
+        let status = payload.data.bleStatus? payload.data.bleStatus : "undefined"
+        yield put(sendAdapterStatusAction(status));
+      } else if(payload.type == StreamingTypes.DEVICE_DATA){
+        if(payload.data.isConnected){
+          let bleDevice: BleDevice = {
+            id: payload.data.deviceId,
+            name: payload.data.name,
+          }
+          yield put(sendConnectSuccessAction(bleDevice));
+        } else {
+          let deviceId = payload.data.deviceId? payload.data.deviceId : ""
+          yield put(disconnectedSuccessAction(deviceId, true));
+        }
+      }
+
     }
   } catch (e) {
     console.log(e);
@@ -267,7 +311,9 @@ export function* timerSaga(action: {
         // take(END) will cause the saga to terminate by jumping to the finally block
         let seconds = yield take(chan)
         yield put(sendTimeValues(seconds))
-
+        if((seconds != 0) & (seconds % 30 == 0)){
+          yield put(scanAndConnectDetachedDevice())
+        }
       }
     } finally {
       if (yield cancelled()) {
@@ -297,4 +343,5 @@ export function* bluetoothSaga() {
   yield takeEvery(DISCONNECT_FROM_DEVICE, disconnectFromDevice);
 
   yield takeLatest(START_TIMER, timerSaga);
+  yield takeLatest(SCAN_DETACHED_DEVICES, scanAndConnectDetachedDevices);
 }

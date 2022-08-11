@@ -15,7 +15,7 @@ import {
   GetDeviceStatusData,
   GetServiceInfo,
   INITIATE_CONNECTION,
-  InitiateConnectionAction,
+  InitiateConnectionAction, SCAN_DETACHED_DEVICES, ScanAndConnectDetachedDevice,
   SEND_ADAPTER_STATUS,
   SEND_COMMAND,
   SEND_COMMAND_ACK,
@@ -119,6 +119,13 @@ export const initiateConnectionAction = (
   return {
     type: INITIATE_CONNECTION,
     payload: {id: deviceId, name},
+  };
+};
+
+export const scanAndConnectDetachedDevice = (
+): ScanAndConnectDetachedDevice => {
+  return {
+    type: SCAN_DETACHED_DEVICES
   };
 };
 
