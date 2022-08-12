@@ -5,22 +5,28 @@ import bluetoothReducer from './bluetooth/bluetooth.reducer';
 import {useDispatch} from 'react-redux';
 import {combineReducers} from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
-import {all, fork} from 'redux-saga/effects';
+import {all, fork,call} from 'redux-saga/effects';
 import {bluetoothSaga} from './bluetooth/bluetooth.saga';
 import testReducer from "./bluetooth/test.reducer";
 import BLEReducer from "./bluetooth/reducer";
 import GlobalReducer from "./global/reducer";
+import {watchAuthActions} from "./auth/auth.sagas";
+import authReducer from "./auth/auth.reducer";
+import {loadAsyncStorage, watchSetStorageItem} from "./storage/storage.sagas";
+import storageReducer from "./storage/storage.reducer";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const rootSaga = function* rootSaga() {
-  yield all([fork(bluetoothSaga)]);
+  yield all([fork(bluetoothSaga), fork(watchAuthActions),   call(loadAsyncStorage),     call(watchSetStorageItem),]);
 };
 
 const rootReducer = combineReducers({
   bluetooth: BLEReducer,
   commandAcknew : testReducer,
-  global : GlobalReducer
+  global : GlobalReducer,
+  auth : authReducer,
+  storage: storageReducer,
 });
 
 export const store = configureStore({

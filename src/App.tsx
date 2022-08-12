@@ -44,6 +44,7 @@ import {getAdapterStatus} from "./store/bluetooth/actions";
 import DeviceView from "./pages/DeviceView";
 import Newble from "./pages/Newble";
 import StartTherapyView from "./pages/StartTherapy";
+import LoginView from "./pages/LoginView";
 
 // import {Device} from "react-native-ble-plx";
 
@@ -163,9 +164,9 @@ const Home: FC = () => {
 
       <NavigationContainer>
         <Stack.Navigator>
-            {/*<Stack.Screen component={Newble} name={'Newble'} options={{headerStyle:{*/}
-            {/*        backgroundColor : '#353535'*/}
-            {/*    }, headerTintColor: '#fff'}  }/>*/}
+            <Stack.Screen component={LoginView} name={'Newble'} options={{headerStyle:{
+                    backgroundColor : '#353535'
+                }, headerTintColor: '#fff'}  }/>
 
           <Stack.Screen component={HomeView} name={"Main"} options={{headerShown : false}}/>
             <Stack.Screen component={StartTherapyView} name={'StartTherapyView'} options={{headerStyle:{
