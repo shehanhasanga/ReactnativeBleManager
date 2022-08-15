@@ -67,6 +67,13 @@ export const sendCommand = (command: Command): SendCommand => {
   };
 };
 
+export const sendCommandWithActionCommand = (command: ActionCommand): SendCommand => {
+  return {
+    type: SEND_COMMAND,
+    payload: command,
+  };
+};
+
 export const getDeviceStatusData = (command: Command): GetDeviceStatusData => {
   let actionCommand: ActionCommand = convertCommandToActionCommand(command);
   return {

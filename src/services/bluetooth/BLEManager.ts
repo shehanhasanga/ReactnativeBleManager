@@ -4,6 +4,7 @@ import {BleError, Characteristic, Subscription} from "react-native-ble-plx";
 import {DeviceStatus} from "../../models/Ble/DeviceStatus";
 import {BleDevice} from "../../models/Ble/BleDevice";
 import { stringToBytes } from "convert-string";
+import {getServiceUUID} from "./BluetoothConstants";
 
 export interface BLECommand {
     deviceId : string,
@@ -159,26 +160,26 @@ class BLEManager {
         this.connetingDevices.set(identifier, name)
         console.log("blemanager id" + identifier+ "+++++++++++")
         await BleManager.connect(identifier)
-            .then(() => {
-                if(this.disconnectedDevices.has(identifier)){
-                    this.disconnectedDevices.delete(identifier)
-                }
-                if(this.detachedDevices.has(identifier)){
-                    this.detachedDevices.delete(identifier)
-                }
-                let deviceName = ''
-                if(this.connetingDevices.has(identifier)){
-                    deviceName = this.connetingDevices.get(identifier)
-                } else {
-                    deviceName = 'UnKnown'
-                }
+        if(this.disconnectedDevices.has(identifier)){
+            this.disconnectedDevices.delete(identifier)
+        }
+        if(this.detachedDevices.has(identifier)){
+            this.detachedDevices.delete(identifier)
+        }
+        let deviceName = ''
+        if(this.connetingDevices.has(identifier)){
+            deviceName = this.connetingDevices.get(identifier)
+        } else {
+            deviceName = 'UnKnown'
+        }
 
-                let adapterPayload : AdapterPayload = {
-                    type : StreamingTypes.DEVICE_DATA,
-                    data : { deviceId: identifier, name: deviceName,isConnected: true}
-                }
-                this.adapterEmiter({payload :adapterPayload})
-            })
+        let adapterPayload : AdapterPayload = {
+            type : StreamingTypes.DEVICE_DATA,
+            data : { deviceId: identifier, name: deviceName,isConnected: true}
+        }
+
+        await BleManager.retrieveServices(identifier, [getServiceUUID()])
+        this.adapterEmiter({payload :adapterPayload})
     }
 
     disconnectFromPeripheral = async (identifier: string) => {
@@ -218,7 +219,7 @@ class BLEManager {
 
 
     writeCharacteristicWithResponse = async (command: BLECommand) => {
-        console.log("get the commmand send req from ble manager +++++++++++++++++++++++")
+        console.log("get the commmand send req from ble manager device id +++++++++++++++++++++++" + command.deviceId)
         console.log("get the commmand send req from ble char +++++++++++++++++++++++" + command.characteristicUUID)
         console.log("get the commmand send req from ble service +++++++++++++++++++++++" + command.serviceUUID)
         console.log("get the commmand send req from ble data +++++++++++++++++++++++" + command.data)
@@ -230,7 +231,7 @@ class BLEManager {
             command.serviceUUID,
             command.characteristicUUID,
             dataSent
-        ).then( () => console.log("send message to the device +=++++++++ble manager "))
+        ).then( () => console.log("send message to the device +=++++++++ble manager ++++++++++++++++++================================"))
             .catch(e => console.log(e))
         return true;
     }
@@ -242,7 +243,7 @@ class BLEManager {
         console.log("enable notifi id :" + command.characteristicUUID)
         console.log("enable notifi id :" + command.serviceUUID)
         console.log("enable notifi id :" + command.deviceId)
-        await BleManager.retrieveServices(command.deviceId, [command.serviceUUID])
+        // await BleManager.retrieveServices(command.deviceId, [command.serviceUUID])
         await BleManager.startNotification(
             command.deviceId,
             command.serviceUUID,

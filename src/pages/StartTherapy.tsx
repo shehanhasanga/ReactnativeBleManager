@@ -1,79 +1,89 @@
 import React, {FC, useEffect, useState} from 'react';
-import {BluetoothPeripheral} from "../models/BluetoothPeripheral";
-import {
-    View,
-    Text,
-    FlatList,
-    TouchableHighlightComponent,
-    TouchableOpacityComponent,
-    TouchableOpacity, ListRenderItemInfo
-} from "react-native";
-import {Session, TherapyConfig} from "../store/bluetooth/bluetooth.types";
-import DeviceListItem from "../components/listItems/DeviceListItem";
-import {isAsyncThunkAction} from "@reduxjs/toolkit";
+import {FlatList, Text, TouchableOpacity, View} from "react-native";
+
+import Command, {CommandType} from "../models/Ble/commands/Command";
+import {sendCommand} from "../store/bluetooth/actions";
+import {fetchSesstion, updateSesstion} from "../store/session/session.action";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../store/store";
+import {Session, TherapyConfig} from "../store/session/session.types";
 
 
 const StartTherapyView: FC = ({ route, navigation }) => {
+    var sessionId = "123456"
     const { deviceId } = route.params;
+    const dispatch = useDispatch();
 
+    const startProcess = () => {
+        dispatch(sendCommand(new Command(deviceId, CommandType.START)))
+    }
+    const gotoProgress = () => {
+        navigation.navigate('DeviceView', {deviceId: deviceId});
+    }
+    const getdata = () => {
+        dispatch(fetchSesstion("", ""))
+    }
+    const sessionData = useSelector(
+        (state: RootState) => state.session.sessionList,
+    );
+    useEffect(() => {
+        getdata()
 
-    const [session, setSesston] = useState<any>('')
-    const getData = async () => {
-        const therapy1 : TherapyConfig = {
-            pattern : 1,
-            itensity : 1,
-            time : 10
-        }
-        const therapy2: TherapyConfig = {
-            pattern : 0,
-            itensity : 2,
-            time : 3
-        }
-        const therapy3 : TherapyConfig = {
-            pattern : 1,
-            itensity : 0,
-            time : 3
-        }
-        const therapyList:Array<TherapyConfig> = new Array<TherapyConfig>()
-        therapyList.push(therapy1)
-        therapyList.push(therapy2)
-        therapyList.push(therapy3)
+    }, [])
 
-        const session1 : Session = {
-            deviceIdAndroid : deviceId,
-            deviceIdIos : "",
-            elapseTime : 14,
-            therapyList : therapyList,
-            totalTime : 18
-        }
-        let sum = 0
-        for(let i = 0 ; i < session1.therapyList.length ; i++){
-            sum = sum + session1.therapyList[i].time
-            if(session1.elapseTime > sum){
-                session1.therapyList[i].progress = session1.therapyList[i].time
-            } else {
-                if((sum - session1.elapseTime) > session1.therapyList[i].time){
-                    session1.therapyList[i].progress = 0
-                } else {
-                    session1.therapyList[i].progress = session1.therapyList[i].time - (sum - session1.elapseTime)
+    useEffect(() => {
+        if(sessionData){
+            if(sessionData.length > 0){
+                let updatedSession = sessionData.find(item => item.sessionId == sessionId)
+                if(updatedSession) {
+                    // setSesston(updatedSession)
+                    setViewData(updatedSession)
                 }
 
             }
 
         }
-         setSesston(session1)
+    }, [sessionData])
+
+
+    const updateSession = () => {
+        dispatch(updateSesstion("", "", 4))
     }
 
-    useEffect(() => {
-        getData()
-    }, [])
+    const [session, setSesston] = useState<any>('')
+    const setViewData = async (sessiondata :Session) => {
+        let session : Session = {
+            sessionId : sessiondata.sessionId,
+            deviceIdAndroid : sessiondata.deviceIdAndroid,
+            deviceIdIos : sessiondata.deviceIdIos,
+            elapseTime: sessiondata.elapseTime,
+            therapyList : sessiondata.therapyList
+        }
 
-    const setProgress = ( ) => {
+        let sum = 0
+        let list = []
+        for(let i = 0 ; i < session.therapyList.length ; i++){
+            sum = sum + session.therapyList[i].time
+            let therapyConfig : TherapyConfig = {
+                pattern : session.therapyList[i].pattern,
+                time : session.therapyList[i].time,
+                itensity : session.therapyList[i].itensity
+            }
+            if(session.elapseTime > sum){
+                therapyConfig.progress = session.therapyList[i].time
+            } else {
+                if((sum - session.elapseTime) > session.therapyList[i].time){
+                    therapyConfig.progress = 0
+                } else {
+                    therapyConfig.progress = session.therapyList[i].time - (sum - session.elapseTime)
+                }
+            }
+            list.push(therapyConfig)
 
-
+        }
+        session.therapyList = list
+        setSesston(session)
     }
-
-
     const TherapyItem = (item, index, separators, processedTime) => {
         const therapy: TherapyConfig = item
         let progress: number =  Math.round((((therapy.progress)? therapy.progress : 0 )/ therapy.time) * 100)
@@ -173,7 +183,9 @@ const StartTherapyView: FC = ({ route, navigation }) => {
                     }}></View>
                 </View>
 
+
             </View>
+
         )
     }
 
@@ -183,14 +195,12 @@ const StartTherapyView: FC = ({ route, navigation }) => {
             height: '100%',
             paddingHorizontal : 10
         }}>
-            {/*<Text>Start therapy</Text>*/}
-            {/*<Text>Therapy Session </Text>*/}
             <FlatList style={{
 
             }}
 
                 contentContainerStyle={{
-                    flex : 100
+
                 }}
                 data={session?.therapyList}
 
@@ -202,14 +212,47 @@ const StartTherapyView: FC = ({ route, navigation }) => {
 
             />
             <View style={{
-                flex : 1
+                flex : 1,
+                alignItems :"center",
             }}
-            ></View>
-            <Text>Start</Text>
+            >
+                <TouchableOpacity
+                    style={{
+                        width:"70%"
+                    }}
+                    onPress={() => {startProcess()}}
+                >
+                    <View style={{
+                        alignItems :"center",
+                        padding: 10,
+                        backgroundColor : "#0000ff",
 
+                    }}>
+                        <Text>start</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={{
+                        width:"70%"
+                    }}
+                    onPress={() => {gotoProgress()}}
+                >
+                    <View style={{
+                        alignItems :"center",
+                        padding: 10,
+                        backgroundColor : "#0000ff",
+
+                    }}>
+                        <Text>view details</Text>
+                    </View>
+                </TouchableOpacity>
+
+            </View>
         </View>
     )
 
 
 }
 export default StartTherapyView;
+
+

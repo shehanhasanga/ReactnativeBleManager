@@ -161,7 +161,7 @@ const HomeView: FC<HomeViewProps> = props => {
         <ConnectedDeviceList
           callback={id => {
             console.log(id);
-            props.navigation.navigate('DeviceView', {deviceId: id});
+            props.navigation.navigate('StartTherapyView', {deviceId: id});
             // DeviceView
           }}
           devices={connectedDevices}

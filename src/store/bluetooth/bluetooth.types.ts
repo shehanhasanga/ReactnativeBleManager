@@ -2,6 +2,7 @@ import {BluetoothPeripheral} from "../../models/BluetoothPeripheral";
 import bluetoothReducer from "./bluetooth.reducer";
 import {BleDevice} from "../../models/Ble/BleDevice";
 import {DeviceStatus} from "../../models/Ble/DeviceStatus";
+import {Session} from "../session/session.types";
 
 export const GET_ADAPTER_STATUS = 'ADAPTER_STATUS';
 export const GET_SERVICES_INFO = 'GET_SERVICES_INFO';
@@ -52,20 +53,7 @@ export interface BluetoothState {
 }
 
 
-export interface TherapyConfig {
-    pattern :  number,
-    itensity : number,
-    time : number,
-    progress? : number
-}
 
-export interface Session {
-    deviceIdAndroid : string,
-    deviceIdIos : string,
-    elapseTime: number,
-    totalTime? : number,
-    therapyList : Array<TherapyConfig>
-}
 
 export interface ActionCommand {
     deviceId : string,

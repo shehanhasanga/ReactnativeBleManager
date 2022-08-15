@@ -164,6 +164,9 @@ const Home: FC = () => {
 
       <NavigationContainer>
         <Stack.Navigator>
+            {/*<Stack.Screen component={StartTherapyView} name={'StartTherapyView'} options={{headerStyle:{*/}
+            {/*        backgroundColor : '#353535'*/}
+            {/*    }, headerTintColor: '#fff'}  }/>*/}
             <Stack.Screen component={LoginView} name={'Newble'} options={{headerStyle:{
                     backgroundColor : '#353535'
                 }, headerTintColor: '#fff'}  }/>

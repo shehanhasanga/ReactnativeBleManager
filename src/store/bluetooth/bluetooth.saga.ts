@@ -1,32 +1,40 @@
-import {BleManager, Device, Subscription} from 'react-native-ble-plx';
+import {Device} from 'react-native-ble-plx';
 import {AnyAction} from 'redux';
 import {END, eventChannel, TakeableChannel} from 'redux-saga';
-import {call, put, take, takeEvery,cancelled, takeLatest,fork } from 'redux-saga/effects';
+import {call, cancelled, fork, put, take, takeEvery, takeLatest} from 'redux-saga/effects';
 import {sagaActionConstants} from './bluetooth.reducer';
 import bluetoothLeManager, {BLECommand} from '../../services/bluetooth/BluetoothLeManager';
 import {
   actionTypes,
-  deviceFoundAction, disconnectedSuccessAction,
-  getCurrentDeviceStatusData, scanAndConnectDetachedDevice,
-  sendAckForCommand,
+  deviceFoundAction,
+  disconnectedSuccessAction,
+  getCurrentDeviceStatusData,
+  scanAndConnectDetachedDevice,
   sendAdapterStatusAction,
   sendConnectFailAction,
   sendConnectSuccessAction,
   sendDeviceStatusAction,
-  sendTimeValues, startTimerAction
+  sendTimeValues,
+  startTimerAction,
+    sendCommand as sendCommandAction
 } from "./actions";
 import {
   ActionCommand,
-  CommandAck, DISCONNECT_FROM_DEVICE,
+  DISCONNECT_FROM_DEVICE,
   GET_ADAPTER_STATUS,
-  GET_DEVICESTATUS, INITIATE_CONNECTION, SCAN_DETACHED_DEVICES,
+  GET_DEVICESTATUS,
+  INITIATE_CONNECTION,
+  SCAN_DETACHED_DEVICES,
   SEND_COMMAND,
-  START_SCAN_DEVICES, START_TIMER, StartTimerAction, STOP_SCAN_DEVICES
+  START_SCAN_DEVICES,
+  START_TIMER,
+  STOP_SCAN_DEVICES
 } from "./bluetooth.types";
 import {BleDevice} from "../../models/Ble/BleDevice";
-import {enable} from "react-native-bluetooth-state-manager";
-import {RootState, store} from '../store';
+import {store} from '../store';
 import blemanager, {AdapterPayload, StreamingTypes} from "../../services/bluetooth/BLEManager";
+import Command, {CommandType} from "../../models/Ble/commands/Command";
+import {startSessionAction, syncCommandWithDeviceAction} from "../session/session.action";
 
 type TakeableDevice = {
   payload: {id: string; name: string; serviceUUIDs: string};
@@ -181,8 +189,22 @@ function* getAdapterUpdates() {
           let bleDevice: BleDevice = {
             id: payload.data.deviceId,
             name: payload.data.name,
+            isConnected : true,
           }
           yield put(sendConnectSuccessAction(bleDevice));
+          if(payload.data.deviceId){
+            let deviceIdentifier = payload.data.deviceId ? payload.data.deviceId : ""
+            // let pauseCommand  = new Command(deviceIdentifier, CommandType.PAUSE)
+            // let bleCommand : BLECommand = {
+            //   deviceId : pauseCommand.deviceId,
+            //   data : pauseCommand.getCommandData(),
+            //   serviceUUID :pauseCommand.serviceUUID,
+            //   characteristicUUID : pauseCommand.characteristicUUID
+            // }
+            // yield fork(blemanager.writeCharacteristicWithResponse, bleCommand);
+            yield put(sendCommandAction(new Command(deviceIdentifier, CommandType.PAUSE)))
+          }
+
         } else {
           let deviceId = payload.data.deviceId? payload.data.deviceId : ""
           yield put(disconnectedSuccessAction(deviceId, true));
@@ -216,6 +238,9 @@ function* sendCommand(action: {
   let bleCommand : BLECommand = convertActionCommandToBleCommand(actioncommand);
   // let success = yield fork(bluetoothLeManager.writeCharacteristicWithResponse,bleCommand)
   let success = yield fork(blemanager.writeCharacteristicWithResponse,bleCommand)
+  if(actioncommand.commandType == CommandType.START){
+    yield put(startSessionAction(actioncommand.deviceId));
+  }
   // let ack :CommandAck = {deviceId:actioncommand.deviceId, ackType:actioncommand.commandType}
   // yield put(sendAckForCommand(ack));
 }
@@ -287,7 +312,7 @@ function countdown(secs) {
             emitter(secs)
           } else {
             // this causes the channel to close
-            emitter(END)
+            secs = 200
           }
         }, 1000);
         // The subscriber must return an unsubscribe function
@@ -311,8 +336,12 @@ export function* timerSaga(action: {
         // take(END) will cause the saga to terminate by jumping to the finally block
         let seconds = yield take(chan)
         yield put(sendTimeValues(seconds))
-        if((seconds != 0) & (seconds % 30 == 0)){
+        if((seconds != 0) && (seconds % 30 == 0)){
           yield put(scanAndConnectDetachedDevice())
+        }
+        if((seconds != 0) && (seconds % 10 == 0)){
+          console.log("send a session sync command  +++++++++++++++++++++++++++++++++++")
+          yield put(syncCommandWithDeviceAction())
         }
       }
     } finally {

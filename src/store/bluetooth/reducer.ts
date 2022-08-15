@@ -73,6 +73,10 @@ const BLEReducer = (
         return {
           ...state,
           connectedDeviceList: state.connectedDeviceList.filter(item => item.id !== deviceId),
+          // connectedDeviceList: state.connectedDeviceList.map(
+          //     (device, i) => device.id === deviceId ? {...device, isConnected: false}
+          //         : device
+          // )
         };
       }
 
