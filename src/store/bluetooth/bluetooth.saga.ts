@@ -307,6 +307,7 @@ function* getDeviceStatusUpdates(action: {
 function countdown(secs) {
   return eventChannel(emitter => {
         const iv = setInterval(() => {
+          console.log("called the set interval function ++++++++++++++++++++++++++++++++++++++++++++____________________")
           secs -= 1
           if (secs > 0) {
             emitter(secs)

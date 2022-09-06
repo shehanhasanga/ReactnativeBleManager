@@ -97,9 +97,6 @@ const StartTherapyView: FC = ({ route, navigation }) => {
                 padding : 15,
                 borderRadius : 10,
                 shadowColor : 'white',
-                shadowRadius : 20,
-                shadowOffset : 2,
-                shadowOpacity : 1
             }}>
                 <View style={{
                     display :'flex',

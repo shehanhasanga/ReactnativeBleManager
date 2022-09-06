@@ -76,6 +76,10 @@ import com.android.build.OutputFile
  *   extraPackagerArgs: []
  * ]
  */
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+project.ext.vectoricons = [
+    iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ,'MaterialCommunityIcons.ttf'] // Name of the font files you want to copy
+]
 
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing

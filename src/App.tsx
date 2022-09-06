@@ -45,7 +45,14 @@ import DeviceView from "./pages/DeviceView";
 import Newble from "./pages/Newble";
 import StartTherapyView from "./pages/StartTherapy";
 import LoginView from "./pages/LoginView";
-
+import StartView from "./pages/StartView";
+import LoginPage from "./pages/LoginPage";
+import PersonalDataPage from "./pages/PersonalDataPage";
+import TermsPage from "./pages/TermsPage";
+import StartSetupPage from "./pages/StartSetupPage";
+import GrantPermissionPage from "./pages/GrantPermission";
+import HomeTabsPage from "./pages/HomeTabs";
+// import DrawerPage from "./pages/DrawerPage";
 // import {Device} from "react-native-ble-plx";
 
 const App: FC = () => {
@@ -167,6 +174,18 @@ const Home: FC = () => {
             {/*<Stack.Screen component={StartTherapyView} name={'StartTherapyView'} options={{headerStyle:{*/}
             {/*        backgroundColor : '#353535'*/}
             {/*    }, headerTintColor: '#fff'}  }/>*/}
+            {/*<Stack.Screen component={DrawerPage} name={'DrawerPage'} options={{headerShown : false}}/>*/}
+
+            <Stack.Screen component={GrantPermissionPage} name={'GrantPermissionPage'} options={{headerShown : false}}/>
+            <Stack.Screen component={ScanDevice} name={'Scandevice'} options={{headerStyle:{
+                    backgroundColor : '#353535',
+                }, headerTintColor: '#fff', headerShown : false}  }/>
+            <Stack.Screen component={HomeTabsPage} name={'HomeTabsPage'} options={{headerShown : false}}/>
+            <Stack.Screen component={StartSetupPage} name={'StartSetupPage'} options={{headerShown : false}}/>
+            <Stack.Screen component={TermsPage} name={'TermsPage'} options={{headerShown : false}}/>
+            <Stack.Screen component={PersonalDataPage} name={'PersonalDataPage'} options={{headerShown : false}}/>
+            <Stack.Screen component={LoginPage} name={'LoginPage'} options={{headerShown : false}}/>
+            <Stack.Screen component={StartView} name={'StartView'} options={{headerShown : false}}/>
             <Stack.Screen component={LoginView} name={'Newble'} options={{headerStyle:{
                     backgroundColor : '#353535'
                 }, headerTintColor: '#fff'}  }/>
@@ -175,9 +194,7 @@ const Home: FC = () => {
             <Stack.Screen component={StartTherapyView} name={'StartTherapyView'} options={{headerStyle:{
                     backgroundColor : '#353535'
                 }, headerTintColor: '#fff'}  }/>
-            <Stack.Screen component={ScanDevice} name={'Scandevice'} options={{headerStyle:{
-                    backgroundColor : '#353535'
-                }, headerTintColor: '#fff'}  }/>
+
             <Stack.Screen component={DeviceView} name={"DeviceView"} options={{headerStyle:{
                     backgroundColor : '#353535'
                 }, headerTintColor: '#fff'}  }  />

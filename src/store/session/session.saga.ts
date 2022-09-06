@@ -135,7 +135,6 @@ function* syncCommandWithDevice(action: SyncCommandWithDeviceAction) {
                                 }
                             }
                         }
-
                     }
                     if( session.elapseTime != 0  && (session.elapseTime % 5 == 0)) {
                         // update db
@@ -143,7 +142,6 @@ function* syncCommandWithDevice(action: SyncCommandWithDeviceAction) {
 
                         yield put(updateSesstion("","", session.elapseTime + 1 ))
                     } else {
-
                         // update elapse time
                         // session.elapseTime += 1
                         let newSession:Session = {
@@ -154,9 +152,7 @@ function* syncCommandWithDevice(action: SyncCommandWithDeviceAction) {
                             totalTime : session.totalTime,
                             therapyList : session.therapyList,
                             commandArray : session.commandArray
-
                         }
-
                     }
                 }
             }

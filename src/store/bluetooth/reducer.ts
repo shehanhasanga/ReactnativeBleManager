@@ -35,6 +35,7 @@ const BLEReducer = (
       return {
         ...state,
         isScanning: true,
+        availableDevices : [],
       };
     case STOP_SCAN_DEVICES:
       return {
@@ -46,11 +47,13 @@ const BLEReducer = (
         device => device.id === action.payload.id,
       );
       if (!isDuplicate) {
-        let availableDevices = state.availableDevices.concat(action.payload);
-        return {
-          ...state,
-          availableDevices: availableDevices,
-        };
+        if(action.payload.name){
+          let availableDevices = state.availableDevices.concat(action.payload);
+          return {
+            ...state,
+            availableDevices: availableDevices,
+          };
+        }
       }
 
     case INITIATE_CONNECTION:

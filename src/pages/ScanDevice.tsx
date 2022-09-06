@@ -13,7 +13,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../store/store";
 import {initiateConnectionAction, startScanDevicesAction, stopScanAction} from "../store/bluetooth/actions";
 import DeviceListItem from "../components/listItems/DeviceListItem";
-
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { BackHandler } from "react-native";
 
 type ScanDeviceProps = {
   navigation : any;
@@ -23,6 +24,18 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
       (state: RootState) => state.bluetooth.connectedDeviceList,
   );
   const [connectingDeviceId, setConnectingDeviceId] = React.useState<string>('');
+  function handleBackButtonClick() {
+    goback();
+    return true;
+  }
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+    };
+  }, []);
+
   useEffect( () => {
       if(connectingDeviceId){
         if(connectingDeviceId != ''){
@@ -30,7 +43,10 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
               device => device.id === connectingDeviceId,
           );
           if(isDuplicate){
-            goback()
+            stopScan();
+            setScanning(false);
+            setRefreshing(false);
+            props.navigation.navigate('HomeTabsPage', {deviceId: connectingDeviceId});
           }
         }
       }
@@ -145,7 +161,7 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
       }}>
 
       <View style={{
-        backgroundColor : "#5a5a5c",
+        backgroundColor : "#000000",
         height : '100%',
         width  :'100%',
         display : 'flex',
@@ -165,39 +181,72 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
 
         {/*</ScrollView>*/}
         <View style={{
-          flex : 2,
-          paddingVertical : 20,
-          paddingHorizontal : 10,
-          display : "flex",
-          flexDirection : "row",
-          alignItems : "center",
-          justifyContent : "space-between"
+          width: "100%",
+          marginTop : 20,
+          padding : 10,
+          alignItems : "center"
         }}>
           <Text style={{
-            fontWeight : "bold",
-            fontSize : 15,
-          }}>Scanned Devices : </Text>
-          <TouchableOpacity
-              onPress={() => toggleScan()}
-          >
-            <View style={{
-              paddingHorizontal : 15,
-              paddingVertical : 5,
-              backgroundColor : '#337e89',
-              borderRadius  : 10
+            fontSize : 18,
+            color : "white",
+            fontWeight : "bold"
+          }}>Select your spryng</Text>
+          <Text style={{
+            textAlign : "center",
+            marginTop : 20,
+            fontWeight : "normal",
+            color : "#cacaca"
+          }}>These are the Spryngs we forund. Please make sure to select the right Spryng.</Text>
 
-            }}>
-              {isScanning ? (
-                  <Text>Stop Scan</Text>
-              ) : (
-                  <Text>Start Scan</Text>
-              ) }
-
-            </View>
-          </TouchableOpacity>
-
-
+          <View style={{
+            width : "100%",
+            padding :10,
+            marginTop :  30,
+            backgroundColor : "#222427",
+            display : "flex",
+            flexDirection : "row",
+            justifyContent : "space-between",
+            alignItems : "center"
+          }}>
+            <Text>Spryngs near you</Text>
+            <Icon.Button name= {isScanning ?  "stop-circle" : "refresh"} color="white" size={24} backgroundColor = "#222427"  onPress = {() => {toggleScan()}} />
+          </View>
         </View>
+        {/*<View style={{*/}
+        {/*  flex : 2,*/}
+        {/*  paddingVertical : 20,*/}
+        {/*  paddingHorizontal : 10,*/}
+        {/*  display : "flex",*/}
+        {/*  flexDirection : "row",*/}
+        {/*  alignItems : "center",*/}
+        {/*  justifyContent : "space-between"*/}
+        {/*}}>*/}
+
+        {/*  <Text style={{*/}
+        {/*    fontWeight : "bold",*/}
+        {/*    fontSize : 15,*/}
+        {/*  }}>Scanned Devices : </Text>*/}
+        {/*  <TouchableOpacity*/}
+        {/*      onPress={() => toggleScan()}*/}
+        {/*  >*/}
+        {/*    <View style={{*/}
+        {/*      paddingHorizontal : 15,*/}
+        {/*      paddingVertical : 5,*/}
+        {/*      backgroundColor : '#337e89',*/}
+        {/*      borderRadius  : 10*/}
+
+        {/*    }}>*/}
+        {/*      {isScanning ? (*/}
+        {/*          <Text>Stop Scan</Text>*/}
+        {/*      ) : (*/}
+        {/*          <Text>Start Scan</Text>*/}
+        {/*      ) }*/}
+
+        {/*    </View>*/}
+        {/*  </TouchableOpacity>*/}
+
+
+        {/*</View>*/}
         <View style={{
           flex : 30
         }}>
@@ -223,6 +272,7 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
 
           </View>
         </View>
+
 
 
       </View>
