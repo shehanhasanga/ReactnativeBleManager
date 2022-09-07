@@ -1,6 +1,6 @@
-import React, {FC} from "react";
+import React, {FC, useEffect, useState} from "react";
 import defaultTheme, {WithTheme} from "../theme/defaults";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     Image,
     KeyboardAvoidingView,
@@ -12,11 +12,52 @@ import {
     Dimensions,
     TouchableOpacityComponent, TouchableOpacity, TextInput
 } from "react-native";
+import {RootState} from "../store/store";
+import {USERID, USERNAME} from "../services/storage/storage";
+import {fetchAuthToken} from "../store/auth/auth.actions";
 ;
 
 
 const LoginPage: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
+    const dispatch = useDispatch();
+
+    const usernameloaded = useSelector(
+        (state: RootState) => state.storage[USERNAME],
+    );
+    const userIdLoaded = useSelector(
+        (state: RootState) => state.storage[USERID],
+    );
+
+    useEffect(() => {
+        if(userIdLoaded) {
+            console.log("user id is " + userIdLoaded)
+        }
+    }, [userIdLoaded])
+    useEffect(() => {
+
+        if(usernameloaded){
+            if(usernameloaded != ''){
+                console.log("username is" + usernameloaded)
+                // navigation.navigate('PersonalDataPage')
+            }
+        }
+    },[usernameloaded])
+    const [username, setUsername] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const setText = (txt:string, type: string) => {
+        if(type == 'password'){
+            setPassword(txt)
+        } else {
+            setUsername(txt)
+        }
+    }
+
+    const login = () => {
+        if(password != '' && username != ''){
+            dispatch(fetchAuthToken(username, password))
+        }
+    }
     return(
         <>
             <SafeAreaView>
@@ -72,7 +113,7 @@ const LoginPage: FC= ({ theme,navigation}) => {
                                                     padding: 10,
                                                 }}
                                                 placeholder="username"
-                                                onChangeText={newText => {}}
+                                                onChangeText={newText => setText(newText, "username")}
 
                                             />
 
@@ -92,7 +133,7 @@ const LoginPage: FC= ({ theme,navigation}) => {
                                             }}
                                             secureTextEntry={true}
                                             placeholder="password"
-                                            onChangeText={newText => {}}
+                                            onChangeText={newText => setText(newText, "password")}
                                         />
                                     </View>
 
@@ -106,7 +147,9 @@ const LoginPage: FC= ({ theme,navigation}) => {
                                         alignItems:"center"
                                     }}
                                 >
-                                    <TouchableOpacity style={{
+                                    <TouchableOpacity
+                                        onPress={() => login()}
+                                        style={{
                                         width : width * 0.8,
                                         margin : 20,
                                         padding : 20,

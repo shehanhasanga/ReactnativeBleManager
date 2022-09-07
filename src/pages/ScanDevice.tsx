@@ -52,6 +52,7 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
       }
     // scandevice();
   }, [connectedDevices]);
+
   useEffect( () => {
     toggleScan()
   }, []);
@@ -112,6 +113,10 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
       scandevice();
       setScanning(true);
       setRefreshing(true);
+      wait(10000).then(() => {
+        setRefreshing(false)
+        stopScan();
+      });
     }
   }
   const stopScan = async () => {

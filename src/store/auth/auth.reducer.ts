@@ -3,7 +3,7 @@ import {
   AuthState,
   FETCH_MY_INFO,
   FETCH_MY_INFO_FINISHED,
-  LOGOUT, MY_INFO_FAILED,
+  LOGOUT, MY_INFO_FAILED, SAVE_USER_DATA, SAVE_USER_DATA_FINISHED,
   WithLogoutAction
 } from "./auth.types";
 
@@ -13,6 +13,7 @@ const initialState: AuthState = {
   isCalledMyInfo: false,
   isFinishedMyInfo: false,
   checkingInstance: false,
+  isFinishedSaveUserData : false,
 };
 
 const authReducer = (
@@ -43,6 +44,16 @@ const authReducer = (
       return {
         ...initialState,
       };
+    case SAVE_USER_DATA_FINISHED:
+      return {
+        ...state,
+        isFinishedSaveUserData : action.success
+      }
+    case SAVE_USER_DATA:
+      return {
+        ...state,
+        isFinishedSaveUserData : false
+      }
     default:
       return state;
   }

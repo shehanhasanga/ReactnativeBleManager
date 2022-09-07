@@ -4,9 +4,17 @@ import {
   FetchMyInfoAction, FetchNewTokenFinishedAction,
   FetchTokenAction,
   LOGOUT,
-  LogoutAction,
+  LogoutAction, SAVE_USER_DATA, SAVE_USER_DATA_FINISHED, SaveUserDataAction,
 } from "./auth.types";
 
+
+export interface UserData {
+  userId : string;
+  dateOfBirth : string;
+  height : string;
+  weight : string;
+  gender :string;
+}
 
 export const fetchAuthToken = (
   username: string,
@@ -27,6 +35,24 @@ export const fetchNewAuthTokenFinished = (): FetchNewTokenFinishedAction => ({
 export const logout = (): LogoutAction => {
   return {
     type: LOGOUT,
+  };
+};
+
+export const saveUserDataAction = (
+    userData:UserData
+): SaveUserDataAction => {
+  return {
+    type: SAVE_USER_DATA,
+    userData : userData
+  };
+};
+
+export const saveUserDataFinished = (
+    success: boolean
+): SaveUserDataAction => {
+  return {
+    type: SAVE_USER_DATA_FINISHED,
+    success : success
   };
 };
 

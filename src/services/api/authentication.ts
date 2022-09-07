@@ -1,6 +1,6 @@
 
 
-import {API_ENDPOINT_AUTH_ISSUE_TOKEN} from './endpoints';
+import {API_ENDPOINT_AUTH_ISSUE_TOKEN, API_SAVE_USER_DATA} from './endpoints';
 
 export const PUBLIC_MOBILE_CLIENT_ID = 'orangehrm_mobile_app';
 export const PUBLIC_MOBILE_CLIENT_SECRET = '';
@@ -54,4 +54,18 @@ export const authRequest = (body: object) => {
   };
   console.log(JSON.stringify(body))
   return fetch(authEndpoint, requestOptions);
+};
+
+export const saveUserDataRequest = (body: object) => {
+  const endpoint = API_SAVE_USER_DATA;
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Accept', 'application/json');
+
+  const requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(body),
+  };
+  return fetch(endpoint, requestOptions);
 };

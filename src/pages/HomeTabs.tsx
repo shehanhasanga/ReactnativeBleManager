@@ -18,6 +18,7 @@ import LoginPage from "./LoginPage";
 import PersonalDataPage from "./PersonalDataPage";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DeviceView from "./DeviceView";
+import StartTherapyView from "./StartTherapy";
 
 ;
 
@@ -48,7 +49,9 @@ const HomeTabsPage: FC= ({ route, navigation }) => {
 
             }}
             />
-            <Tab.Screen name="Settings" component={PersonalDataPage}
+            <Tab.Screen name="Settings"
+                        initialParams={{ deviceId: deviceId }}
+                        component={StartTherapyView}
                         options={{
                             tabBarLabel: 'Activities',
                             tabBarIcon: ({ color, size }) => (

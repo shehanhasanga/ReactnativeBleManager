@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View,} from 'react-native';
+import {Button, SafeAreaView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View,} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../store/store';
 import {disconnectDeviceAction, sendCommand, startTimerAction} from '../store/bluetooth/actions';
@@ -147,8 +147,15 @@ const DeviceView: FC = ({ route, navigation }) => {
         }
         setBatteryTextView(deviceState?.batteryVal + "")
         let currentModeVal = deviceState?.apWorkMode
-        setCurrentMode(currentModeVal)
-        setIntensityFlag(deviceState?.intensityFlag)
+        if(currentMode != currentModeVal){
+            setCurrentMode(currentModeVal)
+        }
+
+        if(deviceState?.intensityFlag){
+            if(deviceState?.intensityFlag != intensityFlag){
+                setIntensityFlag(deviceState?.intensityFlag)
+            }
+        }
 
     }
 
@@ -201,23 +208,21 @@ const DeviceView: FC = ({ route, navigation }) => {
                 alignItems :"center"
             }}>
                 <TouchableOpacity
-                    activeOpacity={0.6}
 
                     onPress={()=> {props.callback()}}
                     style={{
-                        height : 60,
-                        width : 60,
-                        borderRadius : 30,
+                        height : 80,
+                        width : 80,
+                        borderRadius : 40,
                     }}
                 >
                     <View  style={{
-                        height : 60,
-                        width : 60,
-                        borderRadius : 30,
+                        height : 80,
+                        width : 80,
+                        borderRadius : 40,
                         backgroundColor : props.active ? '#343434' : '#6e6e6e',
                         alignItems:'center',
                         justifyContent : 'center',
-                        ...styles.shadow
                     }}>
                         <Text  style={{ ...styles.largeTextBold,
 
@@ -420,7 +425,27 @@ const DeviceView: FC = ({ route, navigation }) => {
                         alignItems : "center"
                     }}>
                         <CircularIconButton callback={() => {sendPowerOffCommand()}} title={"Power Off"} size={CircularBtnSize.NORMAL}/>
-                        <CircularIconButton callback={() => {sendStartStopCommand()}} title={ "StartPause"} size={CircularBtnSize.LARGE}/>
+                        <TouchableOpacity
+                            onPress={() => {sendStartStopCommand()}}
+                        >
+                            <View style={{
+                                backgroundColor : "white",
+                                height : 100,
+                                width :100,
+                                borderRadius : 50,
+                                alignItems : "center",
+                                justifyContent : "center"
+                            }}>
+                                <Text style={{
+                                    color : "black",
+                                    fontSize : 20,
+                                    fontWeight : "bold"
+                                }}>Start</Text>
+
+                            </View>
+                        </TouchableOpacity>
+                        {/*<Button  title={"dsds"} onPress={() => {sendStartStopCommand()}}/>*/}
+                        {/*<CircularIconButton callback={() => {sendStartStopCommand()}} title={ "StartPause"} size={CircularBtnSize.LARGE}/>*/}
                         <Text>{timerValue}</Text>
                     </View>
                 </View>

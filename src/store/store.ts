@@ -35,7 +35,8 @@ const rootReducer = combineReducers({
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware => {
-    return getDefaultMiddleware().concat(logger).concat(sagaMiddleware);
+    // return getDefaultMiddleware().concat(logger).concat(sagaMiddleware);
+    return getDefaultMiddleware().concat(sagaMiddleware);
   },
   devTools: process.env.NODE_ENV === 'production',
 });

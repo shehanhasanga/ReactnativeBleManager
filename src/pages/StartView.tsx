@@ -1,6 +1,6 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import defaultTheme, {WithTheme} from "../theme/defaults";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     Image,
     KeyboardAvoidingView,
@@ -12,6 +12,8 @@ import {
     Dimensions,
     TouchableOpacityComponent, TouchableOpacity
 } from "react-native";
+import {RootState} from "../store/store";
+import {USERID, USERNAME} from "../services/storage/storage";
 ;
 
 
@@ -21,7 +23,28 @@ interface StartViewProps extends WithTheme {
 const StartView: FC= ({ theme,navigation}) => {
     theme = defaultTheme
     const dispatch = useDispatch();
+
+    const userIdLoaded = useSelector(
+        (state: RootState) => state.storage[USERID],
+    );
+
+    useEffect(() => {
+        console.log(userIdLoaded)
+    } ,[userIdLoaded])
+
+    const usernameloaded = useSelector(
+        (state: RootState) => state.storage[USERNAME],
+    );
     const { width, height } = Dimensions.get('window');
+    useEffect(() => {
+        if(usernameloaded){
+            if(usernameloaded != ''){
+                console.log(usernameloaded)
+                navigation.navigate('PersonalDataPage')
+            }
+        }
+    },[usernameloaded])
+
 
     return(
         <>
@@ -89,7 +112,9 @@ const StartView: FC= ({ theme,navigation}) => {
                                     justifyContent:"center",
                                     alignItems:"center"
                                 }}>
-                                   <TouchableOpacity style={{
+                                   <TouchableOpacity
+                                       onPress={() => navigation.navigate('LoginPage')}
+                                       style={{
                                        width : width * 0.7,
                                        margin : 20,
                                        padding : 20,

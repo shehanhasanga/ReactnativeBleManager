@@ -4,7 +4,7 @@ import {call, all, takeEvery, select,put} from 'redux-saga/effects';
 import storage, {
   USERNAME,
   ACCESS_TOKEN,
-  REFRESH_TOKEN,
+  REFRESH_TOKEN, USERID,
 } from '../../services/storage/storage';
 import {
   SET_ITEM,
@@ -15,6 +15,7 @@ export function* loadAsyncStorage() {
   try {
     const keys = [
       USERNAME,
+        USERID,
       ACCESS_TOKEN,
       REFRESH_TOKEN,
     ];

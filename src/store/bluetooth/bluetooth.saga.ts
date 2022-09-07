@@ -4,6 +4,7 @@ import {END, eventChannel, TakeableChannel} from 'redux-saga';
 import {call, cancelled, fork, put, take, takeEvery, takeLatest} from 'redux-saga/effects';
 import {sagaActionConstants} from './bluetooth.reducer';
 import bluetoothLeManager, {BLECommand} from '../../services/bluetooth/BluetoothLeManager';
+import BackgroundTimer from 'react-native-background-timer';
 import {
   actionTypes,
   deviceFoundAction,
@@ -306,19 +307,30 @@ function* getDeviceStatusUpdates(action: {
 
 function countdown(secs) {
   return eventChannel(emitter => {
-        const iv = setInterval(() => {
-          console.log("called the set interval function ++++++++++++++++++++++++++++++++++++++++++++____________________")
-          secs -= 1
-          if (secs > 0) {
-            emitter(secs)
-          } else {
-            // this causes the channel to close
-            secs = 200
-          }
-        }, 1000);
-        // The subscriber must return an unsubscribe function
+        BackgroundTimer.runBackgroundTimer(() => {
+              console.log("called the set interval function ++++++++++++++++++++++++++++++++++++++++++++____________________")
+              secs -= 1
+              if (secs > 0) {
+                emitter(secs)
+              } else {
+                // this causes the channel to close
+                secs = 200
+              }
+            },
+            1000);
+        // const iv = setInterval(() => {
+        //   console.log("called the set interval function ++++++++++++++++++++++++++++++++++++++++++++____________________")
+        //   secs -= 1
+        //   if (secs > 0) {
+        //     emitter(secs)
+        //   } else {
+        //     secs = 200
+        //   }
+        // }, 1000);
+
         return () => {
-          clearInterval(iv)
+          // clearInterval(iv)
+          BackgroundTimer.stopBackgroundTimer();
         }
       }
   )

@@ -1,6 +1,6 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import defaultTheme, {WithTheme} from "../theme/defaults";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     Image,
     KeyboardAvoidingView,
@@ -14,18 +14,66 @@ import {
 } from "react-native";
 ;
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import {RootState} from "../store/store";
+import {USERID, USERNAME} from "../services/storage/storage";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import {fetchAuthToken, saveUserDataAction, UserData} from "../store/auth/auth.actions";
+import LoadingModal from "../components/modals/LoadingModal";
 
 const PersonalDataPage: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
     const [modalVisible, setModalVisible] = useState(false);
+    const [showLoadingModal, setShowLoadingModal] = useState(false);
     const [weightModalVisible, setweightModalVisible] = useState(false);
+    const [gender, setGender] = useState<String>("Male")
+    const [genderModalVisible, setGenderModalVisible] = useState(false);
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [date, setDate] = useState(new Date(1994, 10, 30));
-    const [feet, setFeet] = useState<number>(6);
+    const [feet, setFeet] = useState<number>(5);
+    const [inch, setInch] = useState<number>(5);
     const [weight, setWeight] = useState<number>(130);
     const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
+    const [userId, setUserId] = useState();
+    const userIdChange = useSelector(
+        (state: RootState) => state.storage[USERID],
+    );
+    const loaderChange = useSelector(
+        (state: RootState) => state.global.loader,
+    );
+
+    const successSaveUserData = useSelector(
+        (state: RootState) => state.auth.isFinishedSaveUserData,
+    );
+
+    useEffect(() => {
+        if(successSaveUserData){
+            gotoPermissionsPage()
+        }
+    }, [successSaveUserData])
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        // console.log("get loader state")
+        // console.log(loaderChange)
+        setShowLoadingModal(loaderChange.open)
+
+    } ,[loaderChange])
+
+    useEffect(() => {
+        if(userIdChange){
+            if(userIdChange != userId){
+                setUserId(userIdChange)
+            }
+        }
+    },[userIdChange])
+
+    const gotoPermissionsPage = () => {
+        navigation.navigate('GrantPermissionPage')
+    }
+
     const showDatePicker = () => {
         setDatePickerVisibility(true);
     };
@@ -46,6 +94,19 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
         hideDatePicker();
     };
 
+    const handleGender = (genderId:String) => {
+        console.log("handle gender")
+        setGender(genderId);
+    }
+    const handleInch = (numString: String) => {
+        const feetValue = Number.parseInt(numString)
+        if (Number.isNaN(feetValue)) {
+
+        } else {
+            setInch(feetValue)
+        }
+    }
+
     const handleFeet = (numString: String) => {
         const feetValue = Number.parseInt(numString)
         if (Number.isNaN(feetValue)) {
@@ -62,6 +123,101 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
             setWeight(feetValue)
         }
     }
+
+    const sendUserData = () => {
+        if(feet > 0){
+            let heightString = feet.toString() + ":" + inch.toString();
+            let dobString = date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate()
+            let userData : UserData =  {
+                userId : userId,
+                dateOfBirth : dobString,
+                height : heightString,
+                weight : weight.toString(),
+                gender : gender
+            }
+            console.log(userData)
+            dispatch(saveUserDataAction(userData))
+        }
+
+    }
+
+    const GenderRow = (props: {id : string, callback : () => void }  ) => {
+        return (
+            <TouchableOpacity
+                onPress={() => {handleGender(props.id)}}
+            >
+                <View style={{
+                    display : "flex",
+                    flexDirection : "row",
+                    justifyContent : "space-between",
+                    margin:10,
+                    width : "70%",
+                    borderBottomColor : "black",
+                    borderBottomWidth : 1
+                }}>
+                    <Text>{props.id}</Text>
+                    <Icon name= "check"  color={ gender == props.id ? "blue" : "white"}  size={24} />
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    const updateGenderModal = () => {
+        return(
+            <View>
+                <Modal
+                    animationType="none"
+                    transparent={true}
+                    visible={genderModalVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                        setModalVisible(!genderModalVisible);
+                    }}
+                >
+                    <View style={{
+                        alignItems : "center",
+                        justifyContent : "center"
+                    }}>
+                        <View style={{
+                            height :"100%",
+                            width : "100%",
+                            backgroundColor : "black",
+                            opacity : 0.4
+                        }}>
+                        </View>
+                        <View style={styles.centeredView}>
+
+                            <View style={styles.modalView}>
+                                <Text style={styles.modalText}>Select Gender</Text>
+                                <GenderRow id={"Male"} callback={() => {}}  />
+                                <GenderRow id={"Fe-Male"} callback={() => {}} />
+                                <GenderRow id={"Other"} callback={() => {}} />
+
+                                <View style={{
+                                    alignItems:"flex-end"
+                                }}>
+                                    <Pressable
+                                        style={{
+                                            width : "15%"
+                                        }}
+                                        onPress={() => {
+                                            Keyboard.dismiss()
+                                            setGenderModalVisible(!genderModalVisible)
+                                        }}
+                                    >
+                                        <Text >ok</Text>
+                                    </Pressable>
+                                </View>
+
+                            </View>
+                        </View>
+                    </View>
+
+                </Modal>
+            </View>
+        )
+    }
+
     const updateWeightModal = () => {
         return(
             <View>
@@ -214,7 +370,7 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
                                         flexDirection : "row",
                                     }}>
                                         <TextInput
-                                            value={feet.toString()}
+                                            defaultValue={inch.toString()}
                                             style={{
                                                 width : "80%",
                                                 padding : 0,
@@ -226,10 +382,10 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
                                             }}
                                             textAlign="left"
                                             keyboardType="numeric"
-                                            // onChangeText={newText => {}}
+                                            onChangeText={newText => {handleInch(newText)}}
 
                                         />
-                                        <Text>ft</Text>
+                                        <Text>in</Text>
                                     </View>
 
                                 </View>
@@ -321,7 +477,7 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
 
                                     }}>
                                         <Text style={styles.formTxt}>Height</Text>
-                                        <Text onPress={() => {setModalVisible(true)}} style={styles.formTxt}>{feet.toString()} ft 5 in</Text>
+                                        <Text onPress={() => {setModalVisible(true)}} style={styles.formTxt}>{feet.toString()} ft {inch.toString()} in</Text>
 
                                     </View>
                                     <View style={{
@@ -344,7 +500,16 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
 
                                     }}>
                                         <Text style={styles.formTxt}>Gender</Text>
-                                        <Text style={styles.formTxt}>Male</Text>
+                                        <Pressable
+                                            onPress={() => {setGenderModalVisible(true)}}
+                                        >
+                                            <View>
+
+                                                <Text style={styles.formTxt}>{gender}</Text>
+                                            </View>
+
+                                        </Pressable>
+
 
                                     </View>
                                     <View>
@@ -369,7 +534,7 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
                                     }}
                                 >
                                     <TouchableOpacity
-                                        onPress={() => setModalVisible(true)}
+                                        onPress={() => sendUserData()}
                                         style={{
                                         width : width * 0.8,
                                         margin : 20,
@@ -388,7 +553,8 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
                             </View>
                             {updateHeightModal()}
                             {updateWeightModal()}
-
+                            {updateGenderModal()}
+                            {showLoadingModal ?(<LoadingModal callback={() => {}} message={""}/>) : (<></>) }
 
                         </View>
                     </ScrollView>

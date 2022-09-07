@@ -47,5 +47,6 @@ export default {get, set, multiGet};
 
 
 export const USERNAME = 'username';
+export const USERID = 'userId';
 export const ACCESS_TOKEN = 'accessToken';
 export const REFRESH_TOKEN = 'refreshToken';
