@@ -177,8 +177,9 @@ const Home: FC = () => {
             {/*        backgroundColor : '#353535'*/}
             {/*    }, headerTintColor: '#fff'}  }/>*/}
             {/*<Stack.Screen component={DrawerPage} name={'DrawerPage'} options={{headerShown : false}}/>*/}
-            <Stack.Screen component={UserImportantThingsPage} name={'UserImportantThingsPage'} options={{headerShown : false}}/>
             <Stack.Screen component={StartView} name={'StartView'} options={{headerShown : false}}/>
+            <Stack.Screen component={UserImportantThingsPage} name={'UserImportantThingsPage'} options={{headerShown : false}}/>
+
             <Stack.Screen component={LoginPage} name={'LoginPage'} options={{headerShown : false}}/>
             <Stack.Screen component={PersonalDataPage} name={'PersonalDataPage'} options={{headerShown : false}}/>
             <Stack.Screen component={GrantPermissionPage} name={'GrantPermissionPage'} options={{headerShown : false}}/>
