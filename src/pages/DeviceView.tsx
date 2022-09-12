@@ -231,7 +231,8 @@ const DeviceView: FC = ({ route, navigation }) => {
                 </TouchableOpacity>
 
                 <Text style={{
-                    marginVertical: 10
+                    marginVertical: 10,
+                    color : "white"
                 }}>{props.title}</Text>
             </View>
 
@@ -250,9 +251,13 @@ const DeviceView: FC = ({ route, navigation }) => {
                     alignItems:"flex-end"
                 }}>
                     <Text style={{...styles.largeTextBold, color:"white"}}>{props.value}</Text>
-                    <Text>mmHg</Text>
+                    <Text style={{
+                        color : "white"
+                    }}>mmHg</Text>
                 </View>
-                <Text>{props.title}</Text>
+                <Text style={{
+                    color : "white"
+                }}>{props.title}</Text>
             </View>
         )
     }
@@ -339,6 +344,7 @@ const DeviceView: FC = ({ route, navigation }) => {
                         style={{
                             fontWeight: 'bold',
                             fontSize: 15,
+                            color : "white"
                         }}>
                         Connected Device: {selectedDevice?.name}
                     </Text>
@@ -430,8 +436,8 @@ const DeviceView: FC = ({ route, navigation }) => {
                         >
                             <View style={{
                                 backgroundColor : "white",
-                                height : 100,
-                                width :100,
+                                height : 90,
+                                width :90,
                                 borderRadius : 50,
                                 alignItems : "center",
                                 justifyContent : "center"
@@ -446,7 +452,22 @@ const DeviceView: FC = ({ route, navigation }) => {
                         </TouchableOpacity>
                         {/*<Button  title={"dsds"} onPress={() => {sendStartStopCommand()}}/>*/}
                         {/*<CircularIconButton callback={() => {sendStartStopCommand()}} title={ "StartPause"} size={CircularBtnSize.LARGE}/>*/}
-                        <Text>{timerValue}</Text>
+                        <View style={{
+                            alignItems : "center",
+                            width : "100%",
+                            marginTop : 10,
+                            display : "flex",
+                            flexDirection :"row",
+                            justifyContent : "space-between"
+                        }}>
+                            <Text style={{
+                                fontSize : 18
+                            }}>Elapse Time</Text>
+                            <Text style={{
+                                color : "white"
+                            }}>{timerValue}</Text>
+                        </View>
+
                     </View>
                 </View>
                 <View style={{
@@ -507,6 +528,7 @@ const styles = StyleSheet.create({
     largeTextBold : {
         fontSize : 25,
         fontWeight : 'bold',
+        color:"white"
 
     },
     mediumTextBold : {

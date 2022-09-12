@@ -16,11 +16,14 @@ import {loadAsyncStorage, watchSetStorageItem} from "./storage/storage.sagas";
 import storageReducer from "./storage/storage.reducer";
 import {watchSessionActions} from "./session/session.saga";
 import sessionReducer from "./session/session.reducer";
+import themeReducer from '../theme/reducer';
+import {watchUserDataActions} from "./userData/userdata.saga";
+import userDataReducer from "./userData/userdata.reducer";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const rootSaga = function* rootSaga() {
-  yield all([fork(bluetoothSaga), fork(watchAuthActions),   call(loadAsyncStorage),     call(watchSetStorageItem), call(watchSessionActions), ]);
+  yield all([fork(bluetoothSaga), fork(watchAuthActions),   call(loadAsyncStorage),     call(watchSetStorageItem), call(watchSessionActions), call(watchUserDataActions)]);
 };
 
 const rootReducer = combineReducers({
@@ -30,6 +33,8 @@ const rootReducer = combineReducers({
   auth : authReducer,
   storage: storageReducer,
   session: sessionReducer,
+  theme: themeReducer,
+  userData : userDataReducer
 });
 
 export const store = configureStore({

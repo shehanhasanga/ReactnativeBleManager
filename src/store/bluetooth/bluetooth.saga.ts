@@ -36,6 +36,8 @@ import {store} from '../store';
 import blemanager, {AdapterPayload, StreamingTypes} from "../../services/bluetooth/BLEManager";
 import Command, {CommandType} from "../../models/Ble/commands/Command";
 import {startSessionAction, syncCommandWithDeviceAction} from "../session/session.action";
+import {setItem, setMulti} from "../storage/storage.actions";
+import {ACCESS_TOKEN, DEVICEID, REFRESH_TOKEN, USERID, USERNAME} from "../../services/storage/storage";
 
 type TakeableDevice = {
   payload: {id: string; name: string; serviceUUIDs: string};
@@ -135,7 +137,10 @@ function* connectToPeripheral(action: {
     yield call(blemanager.stopScanningForPeripherals);
     yield put(getCurrentDeviceStatusData(peripheralId));
     // yield put(sendConnectSuccessAction(bleDevice));
-    yield put(startTimerAction(200, true));
+
+
+    // yield put(startTimerAction(200, true));
+    yield put(setItem("deviceId",peripheralId + " " + action.payload.name))
   } catch (e) {
     yield put(sendConnectFailAction(false));
   }

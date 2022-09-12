@@ -4,7 +4,7 @@ import {call, all, takeEvery, select,put} from 'redux-saga/effects';
 import storage, {
   USERNAME,
   ACCESS_TOKEN,
-  REFRESH_TOKEN, USERID,
+  REFRESH_TOKEN, USERID, DEVICEID,
 } from '../../services/storage/storage';
 import {
   SET_ITEM,
@@ -18,6 +18,7 @@ export function* loadAsyncStorage() {
         USERID,
       ACCESS_TOKEN,
       REFRESH_TOKEN,
+      DEVICEID,
     ];
     const keyValuePairs = yield call(storage.multiGet, keys);
     // update redux store
@@ -29,8 +30,13 @@ export function* loadAsyncStorage() {
 
 function* setItemAsyncStorage(action: SetItemAction) {
   try {
-    yield storage.set(action.key, action.value);
-  } catch (error) {}
+    console.log("setItemAsyncStorage")
+    console.log(action.key)
+    console.log(action.value)
+    yield all(storage.set(action.key, action.value)) ;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 function* setMultiAsyncStorage(action: SetMultiAction) {

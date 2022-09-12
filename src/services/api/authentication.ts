@@ -1,6 +1,7 @@
 
 
-import {API_ENDPOINT_AUTH_ISSUE_TOKEN, API_SAVE_USER_DATA} from './endpoints';
+import {API_ENDPOINT_AUTH_ISSUE_TOKEN, API_SAVE_USER_DATA, API_GET_USERIMPORTANT_THINGS} from './endpoints';
+import {GET_COMMON_PHYSICAL_ACTIVITIES, GET_USER_IMPORTANT_THINGS} from "../../store/userData/userdata.types";
 
 export const PUBLIC_MOBILE_CLIENT_ID = 'orangehrm_mobile_app';
 export const PUBLIC_MOBILE_CLIENT_SECRET = '';
@@ -66,6 +67,33 @@ export const saveUserDataRequest = (body: object) => {
     method: 'POST',
     headers: headers,
     body: JSON.stringify(body),
+  };
+  return fetch(endpoint, requestOptions);
+};
+
+export const getCommonPhysicalActivities = (body: object) => {
+  const endpoint = GET_COMMON_PHYSICAL_ACTIVITIES;
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Accept', 'application/json');
+
+  const requestOptions = {
+    method: 'GET',
+    headers: headers
+  };
+  return fetch(endpoint, requestOptions);
+};
+
+
+export const getUserImportantThings = (body: object) => {
+  const endpoint = API_GET_USERIMPORTANT_THINGS;
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  headers.append('Accept', 'application/json');
+
+  const requestOptions = {
+    method: 'GET',
+    headers: headers
   };
   return fetch(endpoint, requestOptions);
 };

@@ -310,6 +310,13 @@ class BLEManager {
         return result;
     }
 
+    //add new device for the initial loading if available
+    public addDetachedDevice = (deviceId :string) => {
+        if(!this.disconnectedDevices.has(deviceId)){
+            this.detachedDevices.set(deviceId)
+        }
+    }
+
 
 }
 const blemanager = new BLEManager()

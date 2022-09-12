@@ -40,7 +40,7 @@ import ScanDevice from "./pages/ScanDevice";
 import HomeView from "./pages/HomeView";
 import TextModal from "./components/modals/InfoModal";
 import InfoModal from "./components/modals/InfoModal";
-import {getAdapterStatus} from "./store/bluetooth/actions";
+import {getAdapterStatus, startTimerAction} from "./store/bluetooth/actions";
 import DeviceView from "./pages/DeviceView";
 import Newble from "./pages/Newble";
 import StartTherapyView from "./pages/StartTherapy";
@@ -52,6 +52,7 @@ import TermsPage from "./pages/TermsPage";
 import StartSetupPage from "./pages/StartSetupPage";
 import GrantPermissionPage from "./pages/GrantPermission";
 import HomeTabsPage from "./pages/HomeTabs";
+import UserImportantThingsPage from "./pages/UserImportantThingsPage";
 // import DrawerPage from "./pages/DrawerPage";
 // import {Device} from "react-native-ble-plx";
 
@@ -66,6 +67,7 @@ const App: FC = () => {
 const Home: FC = () => {
   useEffect( () => {
       getBleStatus()
+      dispatch(startTimerAction(200, true))
   }, []);
 
 
@@ -175,6 +177,7 @@ const Home: FC = () => {
             {/*        backgroundColor : '#353535'*/}
             {/*    }, headerTintColor: '#fff'}  }/>*/}
             {/*<Stack.Screen component={DrawerPage} name={'DrawerPage'} options={{headerShown : false}}/>*/}
+            <Stack.Screen component={UserImportantThingsPage} name={'UserImportantThingsPage'} options={{headerShown : false}}/>
             <Stack.Screen component={StartView} name={'StartView'} options={{headerShown : false}}/>
             <Stack.Screen component={LoginPage} name={'LoginPage'} options={{headerShown : false}}/>
             <Stack.Screen component={PersonalDataPage} name={'PersonalDataPage'} options={{headerShown : false}}/>
