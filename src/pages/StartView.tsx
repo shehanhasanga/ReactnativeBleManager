@@ -34,19 +34,19 @@ const StartView: FC= ({ theme,navigation}) => {
         (state: RootState) => state.bluetooth.connectedDeviceList,
     );
 
-    // useEffect(() => {
-    //     if(connectedDeviceId){
-    //         if(connectedDevices.length > 0){
-    //             const isDuplicate = connectedDevices.some(
-    //                 device => device.id === connectedDeviceId,
-    //             );
-    //             if(isDuplicate){
-    //                 navigation.navigate('HomeTabsPage', {deviceId: connectedDeviceId});
-    //             }
-    //         }
-    //
-    //     }
-    // } , [connectedDevices])
+    useEffect(() => {
+        if(connectedDeviceId){
+            if(connectedDevices.length > 0){
+                const isDuplicate = connectedDevices.some(
+                    device => device.id === connectedDeviceId,
+                );
+                if(isDuplicate){
+                    navigation.navigate('HomeTabsPage', {deviceId: connectedDeviceId});
+                }
+            }
+
+        }
+    } , [connectedDevices])
 
     const userIdLoaded = useSelector(
         (state: RootState) => state.storage[USERID],

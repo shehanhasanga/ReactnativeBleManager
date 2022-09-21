@@ -22,6 +22,27 @@ const LoginPage: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
     const dispatch = useDispatch();
 
+    const isPortrait = () => {
+        const dim = Dimensions.get('screen');
+        return dim.height >= dim.width;
+    };
+    const [orientation, setOrientation] = useState<'PORTRAIT' | 'LANDSCAPE'>(
+        isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
+    );
+
+    useEffect(() => {
+        const callback = () => {
+            setOrientation(isPortrait() ? 'PORTRAIT' : 'LANDSCAPE')
+            console.log(orientation)
+        };
+
+        Dimensions.addEventListener('change', callback);
+
+        return () => {
+            Dimensions.removeEventListener('change', callback);
+        };
+    }, []);
+
     const usernameloaded = useSelector(
         (state: RootState) => state.storage[USERNAME],
     );
@@ -39,7 +60,7 @@ const LoginPage: FC= ({ theme,navigation}) => {
         if(usernameloaded){
             if(usernameloaded != ''){
                 console.log("username is" + usernameloaded)
-                // navigation.navigate('PersonalDataPage')
+                navigation.navigate('PersonalDataPage')
             }
         }
     },[usernameloaded])
