@@ -372,6 +372,8 @@ PODS:
     - React-Core
   - RNCMaskedView (0.2.7):
     - React-Core
+  - RNCPushNotificationIOS (1.10.1):
+    - React-Core
   - RNDateTimePicker (6.3.2):
     - React-Core
   - RNGestureHandler (2.6.0):
@@ -379,6 +381,8 @@ PODS:
   - RNScreens (3.15.0):
     - React-Core
     - React-RCTImage
+  - RNSVG (13.2.0):
+    - React-Core
   - RNVectorIcons (9.2.0):
     - React-Core
   - SocketRocket (0.6.0)
@@ -450,9 +454,11 @@ DEPENDENCIES:
   - RNBluetoothStateManager (from `../node_modules/react-native-bluetooth-state-manager`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -554,12 +560,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCMaskedView:
     :path: "../node_modules/@react-native-masked-view/masked-view"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -619,9 +629,11 @@ SPEC CHECKSUMS:
   RNBluetoothStateManager: 4f2d73aecf081b97024116cba628e36c5b283791
   RNCAsyncStorage: 7f9c2d854193313a97c9cc6673f66d2d59d7be81
   RNCMaskedView: ad49d114ee1faa6e4116c310276073b61a0b3dd2
+  RNCPushNotificationIOS: 089da3b657e1e3d464f38195fd2e3069608ef5af
   RNDateTimePicker: e405b7b3526a2707780d4887eca9feeb36992081
   RNGestureHandler: 920eb17f5b1e15dae6e5ed1904045f8f90e0b11e
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  RNSVG: 07037623c36f12e41312730622d5f6b3656227ca
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 44c64131616253fa83366295acdbce3d14926041
