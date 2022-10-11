@@ -424,13 +424,13 @@ const PersonalDataPage: FC= ({ theme,navigation}) => {
                             <Image
                                 style={{
                                     height : height,
-                                    width,
+                                    width : '100%',
                                 }}
                                 source={require("../assets/images/loginimage.jpg")}
                             />
                             <View style={{
                                 height : height,
-                                width,
+                                width : '100%',
                                 color : "white",
                                 position : "absolute",
                                 display : "flex",

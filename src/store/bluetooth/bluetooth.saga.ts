@@ -38,6 +38,7 @@ import Command, {CommandType} from "../../models/Ble/commands/Command";
 import {startSessionAction, syncCommandWithDeviceAction} from "../session/session.action";
 import {setItem, setMulti} from "../storage/storage.actions";
 import {ACCESS_TOKEN, DEVICEID, REFRESH_TOKEN, USERID, USERNAME} from "../../services/storage/storage";
+import {closeLoader, openLoader} from "../global/actions";
 
 type TakeableDevice = {
   payload: {id: string; name: string; serviceUUIDs: string};
@@ -129,6 +130,7 @@ function* connectToPeripheral(action: {
 }) {
   const peripheralId = action.payload.id;
   try{
+    yield put(openLoader());
     let device: Device = yield call(blemanager.connectToPeripheral, peripheralId,action.payload.name);
     let bleDevice: BleDevice = {
       id: peripheralId,
@@ -138,7 +140,7 @@ function* connectToPeripheral(action: {
     yield put(getCurrentDeviceStatusData(peripheralId));
     // yield put(sendConnectSuccessAction(bleDevice));
 
-
+    yield put(closeLoader())
     // yield put(startTimerAction(200, true));
     yield put(setItem("deviceId",peripheralId + " " + action.payload.name))
   } catch (e) {

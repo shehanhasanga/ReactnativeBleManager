@@ -9,6 +9,7 @@ import {name as appName} from './app.json';
 import PushNotification from "react-native-push-notification";
 import {Platform
 } from 'react-native';
+import 'react-native-gesture-handler';
 AppRegistry.registerComponent(appName, () => App);
 PushNotification.configure({
     // (optional) Called when Token is generated (iOS and Android)

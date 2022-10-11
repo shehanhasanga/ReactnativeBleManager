@@ -54,6 +54,7 @@ import GrantPermissionPage from "./pages/GrantPermission";
 import HomeTabsPage from "./pages/HomeTabs";
 import UserImportantThingsPage from "./pages/UserImportantThingsPage";
 import ChartView from "./pages/ChartView";
+import HomeDrawerPage from "./pages/HomeDrawer";
 // import DrawerPage from "./pages/DrawerPage";
 // import {Device} from "react-native-ble-plx";
 
@@ -179,6 +180,7 @@ const Home: FC = () => {
             {/*    }, headerTintColor: '#fff'}  }/>*/}
             {/*<Stack.Screen component={DrawerPage} name={'DrawerPage'} options={{headerShown : false}}/>*/}
             {/*<Stack.Screen component={ChartView} name={'ChartView'} options={{headerShown : false}}/>*/}
+            <Stack.Screen component={HomeDrawerPage} name={'HomeDrawerPage'} options={{headerShown : false}}/>
             <Stack.Screen component={StartView} name={'StartView'} options={{headerShown : false}}/>
             <Stack.Screen component={UserImportantThingsPage} name={'UserImportantThingsPage'} options={{headerShown : false}}/>
 

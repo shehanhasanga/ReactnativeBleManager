@@ -62,6 +62,7 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
     setScanning(false);
     setRefreshing(false);
     props.navigation.goBack();
+    console.log("going back from the device scan page=============-")
   }
 
   const dispatch = useDispatch();

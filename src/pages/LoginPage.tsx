@@ -24,6 +24,7 @@ const LoginPage: FC= ({ theme,navigation}) => {
 
     const isPortrait = () => {
         const dim = Dimensions.get('screen');
+        console.log(dim.height >= dim.width)
         return dim.height >= dim.width;
     };
     const [orientation, setOrientation] = useState<'PORTRAIT' | 'LANDSCAPE'>(
@@ -32,8 +33,13 @@ const LoginPage: FC= ({ theme,navigation}) => {
 
     useEffect(() => {
         const callback = () => {
-            setOrientation(isPortrait() ? 'PORTRAIT' : 'LANDSCAPE')
-            console.log(orientation)
+            let deviceIsPotrait: 'PORTRAIT' | 'LANDSCAPE' = 'PORTRAIT'
+            if(isPortrait()){
+                deviceIsPotrait = 'PORTRAIT'
+            } else{
+                deviceIsPotrait = 'LANDSCAPE'
+            }
+            setOrientation(deviceIsPotrait)
         };
 
         Dimensions.addEventListener('change', callback);
@@ -88,7 +94,7 @@ const LoginPage: FC= ({ theme,navigation}) => {
                             <Image
                                 style={{
                                     height : height,
-                                    width,
+                                    width : '100%',
                                 }}
                                 source={require("../assets/images/loginimage.jpg")}
                             />

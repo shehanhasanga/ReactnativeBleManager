@@ -270,6 +270,10 @@ const StartView: FC= ({ theme,navigation}) => {
                                         backgroundColor : theme.palette.success
                                     }}>
                                         <Text style={{
+                                            fontFamily: 'Poppins',
+                                            fontWeight:"bold"
+                                        }}>No oura Ring yet?</Text>
+                                        <Text style={{
                                             fontWeight:"bold"
                                         }}>No oura Ring yet?</Text>
                                     </TouchableOpacity>

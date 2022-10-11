@@ -95,7 +95,8 @@ const DeviceView: FC = ({ route, navigation }) => {
         }
     }
     const goback = () => {
-        navigation.goBack();
+        // navigation.goBack();
+        navigation.popToTop()
     }
 
   useEffect(() => {
@@ -104,6 +105,7 @@ const DeviceView: FC = ({ route, navigation }) => {
       if(filteDevice){
           setSelectedDevice(filteDevice);
       } else {
+
           goback()
       }
 
