@@ -24,26 +24,22 @@ const WelcomePage: FC= ({ theme,navigation}) => {
     return(
         <>
             {/*<StatusBar translucent backgroundColor="transparent" />*/}
-            <ImageBackground
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    flex: 1
-                }}
-                source={require("../assets/images/welcome.jpg")}
-            />
-                <SafeAreaView style={{
-                    height : height,
-                    width,
-                    color : "white",
-                    position : "absolute",
-                }}>
+
+                <SafeAreaView >
                 <KeyboardAvoidingView >
                     {/*<ScrollView >*/}
                         {/*<View>*/}
+                    <ImageBackground
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                        }}
+                        source={require("../assets/images/welcome.jpg")}
+                    />
                             <View style={{
                                 height : height,
                                 width,
+                                position : "absolute",
                                 color : "white",
                                 display : "flex",
                                 flexDirection:"column",
