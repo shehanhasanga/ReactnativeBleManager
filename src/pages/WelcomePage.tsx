@@ -23,7 +23,7 @@ const WelcomePage: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
     return(
         <>
-            <StatusBar translucent backgroundColor="transparent" />
+            {/*<StatusBar translucent backgroundColor="transparent" />*/}
             <ImageBackground
                 style={{
                     width: '100%',
@@ -39,7 +39,7 @@ const WelcomePage: FC= ({ theme,navigation}) => {
                     position : "absolute",
                 }}>
                 <KeyboardAvoidingView >
-                    <ScrollView >
+                    {/*<ScrollView >*/}
                         {/*<View>*/}
                             <View style={{
                                 height : height,
@@ -48,7 +48,7 @@ const WelcomePage: FC= ({ theme,navigation}) => {
                                 display : "flex",
                                 flexDirection:"column",
                                 paddingHorizontal : 20,
-
+                                paddingBottom : 20
                             }}>
                                 <View
                                     style={{
@@ -113,7 +113,7 @@ const WelcomePage: FC= ({ theme,navigation}) => {
                                 </View>
                             </View>
                         {/*</View>*/}
-                    </ScrollView>
+                    {/*</ScrollView>*/}
                 </KeyboardAvoidingView>
                 </SafeAreaView>
 
