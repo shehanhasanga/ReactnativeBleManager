@@ -37,8 +37,8 @@ const WelcomePage: FC= ({ theme,navigation}) => {
                         source={require("../assets/images/welcome.jpg")}
                     />
                             <View style={{
-                                height : height,
-                                width,
+                                height : "100%",
+                                width : "100%",
                                 position : "absolute",
                                 color : "white",
                                 display : "flex",
