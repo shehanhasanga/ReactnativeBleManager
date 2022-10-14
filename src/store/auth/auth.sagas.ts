@@ -5,24 +5,34 @@ import {
   LOGOUT,
   FETCH_MY_INFO, FetchTokenAction, SAVE_USER_DATA, SaveUserDataAction,
 } from './auth.types';
-import {authenticate, saveUserDataRequest} from "../../services/api/authentication";
+import {authenticate, getUserData, saveUserDataRequest} from "../../services/api/authentication";
 import {AuthenticationError, getMessageAlongWithGenericErrors} from "../../services/api/errors";
 import {fetchNewAuthTokenFinished, saveUserDataFinished} from "./auth.actions";
 import {TYPE_ERROR} from "../global/types";
 import {closeLoader, openLoader, showSnackMessage} from "../global/actions";
-import {setMulti} from "../storage/storage.actions";
+import {setItem, setMulti} from "../storage/storage.actions";
 import {ACCESS_TOKEN, REFRESH_TOKEN, USERID, USERNAME} from "../../services/storage/storage";
+import {APIResponse} from "../../services/api/apiService";
 
 
 
 function* saveUserData(action: SaveUserDataAction) {
   try {
     yield put(openLoader());
-    const response: Response = yield call(
-        saveUserDataRequest,
-        action.userData
-    );
-    const data = yield call([response, response.json]);
+    // const response: Response = yield call(
+    //     saveUserDataRequest,
+    //     action.userData
+    // );
+    const response: APIResponse = yield call(getUserData);
+    if(response.isTokenUpdated){
+      // update token
+      yield put(setItem(ACCESS_TOKEN, response.token));
+      console.log("token is updated")
+    }
+    console.log(response)
+    // const data = yield call([response, response.json]);
+
+    // console.log(data)
     yield put(saveUserDataFinished(true));
 
   }  catch (error) {
@@ -59,7 +69,7 @@ function* fetchAuthToken(action: FetchTokenAction) {
       console.log(data.payload.token)
       yield put(setMulti({
         [USERNAME]: action.username,
-        [USERID]: data.payload.user.id,
+        [USERID]: data.payload.user[0].id,
         [ACCESS_TOKEN]: data.payload.token,
         [REFRESH_TOKEN]: data.payload.refreshToken,
       }))

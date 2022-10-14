@@ -7,7 +7,7 @@ import {
   Text,
   StyleSheet,
   View,
-  TouchableOpacity, Alert, PermissionsAndroid,  Platform,
+  TouchableOpacity, Alert, PermissionsAndroid, Platform, ImageBackground,
 } from 'react-native';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../store/store";
@@ -159,13 +159,33 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   }
   return (
+      // <>
+      // </>
     <SafeAreaView
       style={{
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor : "#000000",
       }}>
-
+      {/*<ImageBackground*/}
+      {/*    style={{*/}
+      {/*      width: '100%',*/}
+      {/*      height: '100%',*/}
+      {/*    }}*/}
+      {/*    source={require("../assets/images/connectdevice.jpg")}*/}
+      {/*/>*/}
+      <View style={{
+        width : "100%",
+        padding :10,
+        marginTop :  30,
+        display : "flex",
+        flexDirection : "row",
+        justifyContent : "space-between",
+        alignItems : "center"
+      }}>
+        {/*<Text>Spryngs near you</Text>*/}
+        <Icon.Button name="arrow-left" color="#4C4C4C" size={24} backgroundColor = "#000"  onPress = {() => {toggleScan()}} />
+      </View>
       <View style={{
         backgroundColor : "#000000",
         height : '100%',
@@ -174,6 +194,7 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
         flexDirection : "column"
       }}
       >
+
         {/*<ScrollView style={{*/}
         {/*  flex : 1*/}
         {/*}}*/}
@@ -190,33 +211,42 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
           width: "100%",
           marginTop : 20,
           padding : 10,
-          alignItems : "center"
+          alignItems : "center",
+          flex : 1
         }}>
+          {/*<Text style={{*/}
+          {/*  fontSize : 26,*/}
+          {/*  color : "white",*/}
+          {/*}}>Connect</Text>*/}
+          {/*<Text style={{*/}
+          {/*  textAlign : "center",*/}
+          {/*  marginTop : 20,*/}
+          {/*  fontWeight : "normal",*/}
+          {/*  color : "#cacaca"*/}
+          {/*}}>These are the Spryngs we forund. Please make sure to select the right Spryng.</Text>*/}
+
+
+          <Text style={{
+            fontSize : 26,
+            color : "white",
+          }}>Connect</Text>
           <Text style={{
             fontSize : 18,
-            color : "white",
-            fontWeight : "bold"
-          }}>Select your spryng</Text>
-          <Text style={{
-            textAlign : "center",
-            marginTop : 20,
-            fontWeight : "normal",
-            color : "#cacaca"
-          }}>These are the Spryngs we forund. Please make sure to select the right Spryng.</Text>
-
-          <View style={{
-            width : "100%",
-            padding :10,
-            marginTop :  30,
-            backgroundColor : "#222427",
-            display : "flex",
-            flexDirection : "row",
-            justifyContent : "space-between",
-            alignItems : "center"
-          }}>
-            <Text>Spryngs near you</Text>
-            <Icon.Button name= {isScanning ?  "stop-circle" : "refresh"} color="white" size={24} backgroundColor = "#222427"  onPress = {() => {toggleScan()}} />
-          </View>
+            color : "rgba(255,255,255,0.5)",
+          }}>select device</Text>
+          {/*<View style={{*/}
+          {/*  width : "100%",*/}
+          {/*  padding :10,*/}
+          {/*  marginTop :  30,*/}
+          {/*  backgroundColor : "#222427",*/}
+          {/*  display : "flex",*/}
+          {/*  flexDirection : "row",*/}
+          {/*  justifyContent : "space-between",*/}
+          {/*  alignItems : "center"*/}
+          {/*}}>*/}
+          {/*  <Text>Spryngs near you</Text>*/}
+          {/*  <Icon.Button name= {isScanning ?  "stop-circle" : "refresh"} color="white" size={24} backgroundColor = "#222427"  onPress = {() => {toggleScan()}} />*/}
+          {/*</View>*/}
         </View>
         {/*<View style={{*/}
         {/*  flex : 2,*/}
@@ -254,10 +284,11 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
 
         {/*</View>*/}
         <View style={{
-          flex : 30
+          flex : 5
         }}>
           <View style={{
-            height :'100%'
+            height :'100%',
+            marginTop : 10
           }}
           >
             <FlatList

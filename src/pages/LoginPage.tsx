@@ -116,7 +116,8 @@ const LoginPage: FC= ({ theme,navigation}) => {
                                 >
                                     <Text style={{
                                         fontSize : 30,
-                                        fontWeight:"bold"
+                                        fontWeight:"bold",
+                                        color : "white"
                                     }}>Sign in</Text>
                                 </View>
                                 <View
@@ -131,15 +132,16 @@ const LoginPage: FC= ({ theme,navigation}) => {
                                     <View style={{
                                         borderRadius: 5,
                                         borderColor:"#FFFF",
-                                        borderWidth:0.15,
+                                        borderWidth:0.5,
                                     }}>
                                         <View>
                                             <TextInput
                                                 style={{
                                                     width: '100%',
-                                                    padding: 10,
+                                                    padding: 20,
                                                 }}
-                                                placeholder="username"
+                                                placeholder="Username"
+                                                placeholderTextColor="#B2BEB5"
                                                 onChangeText={newText => setText(newText, "username")}
 
                                             />
@@ -148,18 +150,19 @@ const LoginPage: FC= ({ theme,navigation}) => {
 
                                         <View
                                         style={{
-                                            height : 0.19,
+                                            height : 0.5,
                                             backgroundColor : "#FFFF",
-                                            opacity : 0.4
+                                            opacity : 1
                                         }}
                                         ></View>
                                         <TextInput
                                             style={{
                                                 width: '100%',
-                                                padding: 10,
+                                                padding: 20,
                                             }}
                                             secureTextEntry={true}
-                                            placeholder="password"
+                                            placeholder="Password"
+                                            placeholderTextColor="#B2BEB5"
                                             onChangeText={newText => setText(newText, "password")}
                                         />
                                     </View>

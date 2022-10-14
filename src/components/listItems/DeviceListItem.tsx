@@ -18,24 +18,27 @@ const DeviceListItem: FC<DeviceListItemProps> = props => {
             display : "flex",
             flexDirection : "row",
             alignItems : "center",
-            backgroundColor : "#222427",
-            paddingHorizontal:20,
-            paddingVertical :  10,
+            backgroundColor : "#232323",
+            paddingLeft : 10,
+            paddingRight : 20,
+            paddingVertical :  18,
             justifyContent : "space-between",
-            borderRadius : 10
+            borderRadius : 20,
+            width : "85%",
+            alignSelf : "center"
         }}>
             <View style={ {
                 display : "flex",
                 flexDirection : "row",
                 alignItems : "center",
             }}>
-                <Image
-                    style={{
-                        height : 30,
-                        width : 30,
-                    }}
-                    source={require("../../assets/images/sprynglogo.png")}
-                />
+                {/*<Image*/}
+                {/*    style={{*/}
+                {/*        height : 30,*/}
+                {/*        width : 30,*/}
+                {/*    }}*/}
+                {/*    source={require("../../assets/images/sprynglogo.png")}*/}
+                {/*/>*/}
                 <View
                     style={{
                         marginLeft : 20
@@ -44,16 +47,23 @@ const DeviceListItem: FC<DeviceListItemProps> = props => {
                     <Text
                         style={{
                             fontSize: 16,
-                            color: '#FFFFFF',
+                            fontWeight : "bold",
+                            color: 'rgba(255,255,255, 0.5)',
                         }}>
                         {name}
                     </Text>
+                    <View
+                        style={{
+                            height :5
+                        }}
+                    ></View>
                     <Text style={{
-                        fontSize : 14
+                        fontSize : 12,
+                        color : "white"
                     }}>{device.id}</Text>
                 </View>
             </View>
-            <Icon name="chevron-right" color="white"  size={24} />
+            <Icon name="arrow-right" color="white"  size={30} />
 
         </View>
 

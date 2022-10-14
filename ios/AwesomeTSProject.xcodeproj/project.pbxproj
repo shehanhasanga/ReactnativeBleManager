@@ -17,6 +17,7 @@
 		5951096BD28F4B8EAFD966F7 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E093ED631CB24401A25FB664 /* Montserrat-Bold.ttf */; };
 		A8BB46F4E8C549808C91317B /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F17D197277E34C3EB6B02601 /* Poppins-Bold.ttf */; };
 		6D9EDDAAA4784754BE208253 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38DCA8CB267E4E4CBB107CA1 /* Roboto-Bold.ttf */; };
+		9780371EFB4642AF96AF5791 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F3EA5C897F246648A5A066E /* Poppins-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		E093ED631CB24401A25FB664 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; name = "Montserrat-Bold.ttf"; path = "../src/assets/fonts/Montserrat-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		F17D197277E34C3EB6B02601 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; name = "Poppins-Bold.ttf"; path = "../src/assets/fonts/Poppins-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		38DCA8CB267E4E4CBB107CA1 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; name = "Roboto-Bold.ttf"; path = "../src/assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7F3EA5C897F246648A5A066E /* Poppins-Regular.ttf */ = {isa = PBXFileReference; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +175,7 @@
 				E093ED631CB24401A25FB664 /* Montserrat-Bold.ttf */,
 				F17D197277E34C3EB6B02601 /* Poppins-Bold.ttf */,
 				38DCA8CB267E4E4CBB107CA1 /* Roboto-Bold.ttf */,
+				7F3EA5C897F246648A5A066E /* Poppins-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				5951096BD28F4B8EAFD966F7 /* Montserrat-Bold.ttf in Resources */,
 				A8BB46F4E8C549808C91317B /* Poppins-Bold.ttf in Resources */,
 				6D9EDDAAA4784754BE208253 /* Roboto-Bold.ttf in Resources */,
+				9780371EFB4642AF96AF5791 /* Poppins-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

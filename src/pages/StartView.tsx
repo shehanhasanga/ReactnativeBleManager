@@ -214,28 +214,32 @@ const StartView: FC= ({ theme,navigation}) => {
                                 >
                                     <Text style={{
                                         fontSize : 30,
-                                        fontWeight : "bold"
-                                    }}>OURA</Text>
+                                        fontWeight : "bold",
+                                        color : "white"
+                                    }}>SPRYNG</Text>
                                 </View>
                                 <View
                                 style={{
-                                    flex : 3,
+                                    flex : 3
 
                                 }}
                                 >
                                     <Text
                                         style={{
-                                        fontSize : 30
+                                        fontSize : 30,
+                                            color : "white",
                                     }}
                                     >Personal Insights to </Text>
                                     <Text
                                         style={{
-                                            fontSize : 30
+                                            fontSize : 30,
+                                            color : "white",
                                         }}
                                     >Empower your  </Text>
                                     <Text
                                         style={{
-                                            fontSize : 30
+                                            fontSize : 30,
+                                            color : "white",
                                         }}
                                     >Every day  </Text>
                                 </View>
@@ -260,23 +264,23 @@ const StartView: FC= ({ theme,navigation}) => {
                                        }}>Start</Text>
                                    </TouchableOpacity>
 
-                                    <TouchableOpacity
-                                        // onPress={() => {dispatch(setStatusBarColor('#f44336'))}}
-                                        onPress={() => {createNotification()}}
-                                        style={{
-                                        width : width * 0.7,
-                                        marginTop : 10,
-                                        alignItems:"center",
-                                        backgroundColor : theme.palette.success
-                                    }}>
-                                        <Text style={{
-                                            fontFamily: 'Poppins',
-                                            fontWeight:"bold"
-                                        }}>No oura Ring yet?</Text>
-                                        <Text style={{
-                                            fontWeight:"bold"
-                                        }}>No oura Ring yet?</Text>
-                                    </TouchableOpacity>
+                                    {/*<TouchableOpacity*/}
+                                    {/*    // onPress={() => {dispatch(setStatusBarColor('#f44336'))}}*/}
+                                    {/*    onPress={() => {createNotification()}}*/}
+                                    {/*    style={{*/}
+                                    {/*    width : width * 0.7,*/}
+                                    {/*    marginTop : 10,*/}
+                                    {/*    alignItems:"center",*/}
+                                    {/*    backgroundColor : theme.palette.success*/}
+                                    {/*}}>*/}
+                                    {/*    <Text style={{*/}
+                                    {/*        fontFamily: 'Poppins',*/}
+                                    {/*        fontWeight:"bold"*/}
+                                    {/*    }}>No oura Ring yet?</Text>*/}
+                                    {/*    <Text style={{*/}
+                                    {/*        fontWeight:"bold"*/}
+                                    {/*    }}>No oura Ring yet?</Text>*/}
+                                    {/*</TouchableOpacity>*/}
                                 </View>
 
                             </View>

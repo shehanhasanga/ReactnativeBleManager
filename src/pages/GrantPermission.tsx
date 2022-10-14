@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import defaultTheme, {WithTheme} from "../theme/defaults";
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -27,14 +27,51 @@ import {startScanDevicesAction} from "../store/bluetooth/actions";
 import Geolocation from 'react-native-geolocation-service';
 import LoadingModal from "../components/modals/LoadingModal";
 ;
-
+import BleManager from "react-native-ble-manager";
 
 const GrantPermissionPage: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
     const [showLoadingModal, setShowLoadingModal] = useState(false);
+    const [screenHeight, setScreenHeight] = useState(0);
     const devicesAdapterStatus = useSelector(
         (state: RootState) => state.bluetooth.adapterStatus,
     );
+    useEffect( () => {
+        setScreenHeight(height)
+    } , [])
+    const isPortrait = () => {
+        const dim = Dimensions.get('screen');
+        console.log(dim.height >= dim.width)
+        console.log(dim.height)
+        // setScreenHeight(dim.height)
+        return dim.height >= dim.width;
+    };
+    const [orientation, setOrientation] = useState<'PORTRAIT' | 'LANDSCAPE'>(
+        isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
+    );
+
+    useEffect(() => {
+        const callback = () => {
+            setScreenHeight(Dimensions.get('screen').height)
+            let deviceIsPotrait: 'PORTRAIT' | 'LANDSCAPE' = 'PORTRAIT'
+            if(isPortrait()){
+                deviceIsPotrait = 'PORTRAIT'
+            } else{
+                deviceIsPotrait = 'LANDSCAPE'
+            }
+            setOrientation(deviceIsPotrait)
+        };
+
+        const subscription = Dimensions.addEventListener('change', callback);
+
+        return () => {
+            // Dimensions.removeEventListener('change', callback);
+            subscription.remove()
+        };
+    }, []);
+
+
+
     const scandevice = async () => {
         if(Platform.OS === 'ios') {
             // dispatch(startScanDevicesAction());
@@ -67,7 +104,7 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
                 {
                     title: 'Location permission for bluetooth scanning',
-                    message: 'Enable ocatio permissions',
+                    message: 'Enable location permissions',
                     buttonNeutral: 'Ask Me Later',
                     buttonNegative: 'Cancel',
                     buttonPositive: 'OK',
@@ -94,8 +131,17 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
     }
 
     const openBluetoothSettings = () => {
-        BluetoothStateManager.openSettings();
+        if(Platform.OS === 'ios') {
+            BluetoothStateManager.openSettings();
+        } else {
+            enableBlueToothForAndroid()
+        }
+
     };
+
+    const enableBlueToothForAndroid = async () => {
+        await  BleManager.enableBluetooth()
+    }
     const [weightModalVisible, setweightModalVisible] = useState(true);
     const [modalVisible, setModalVisible] = useState(true);
     const updateWeightModal = () => {
@@ -109,37 +155,33 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
 
     return(
         <>
-            <SafeAreaView>
+            <SafeAreaView style={{ height : "100%", backgroundColor : "black"}}>
                 <KeyboardAvoidingView>
                     <ScrollView>
                         <View>
                             <View style={{
-                                height : height,
-                                width,
-                                color : "white",
+                                height : screenHeight,
+                                width : "100%",
                                 display : "flex",
                                 flexDirection:"column",
                                 padding : 20,
-                                backgroundColor : "black"
+                                backgroundColor : "black",
+                                justifyContent : "center",
+                                alignItems : "center"
                             }}>
                                 <View
                                     style={{
-                                        flex : 1,
+                                        flex : 2,
                                         flexDirection:"column",
-
+                                        justifyContent : "center"
                                     }}
                                 >
                                     <Text style={{
-                                        fontSize : 24,
-                                        fontWeight:"bold",
-                                        color : "white",
-                                        marginBottom : 20
-                                    }}>Location</Text>
+                                        fontSize : 27,
+                                        color:"white",
+                                        textAlign: "center"
+                                    }}>Connect</Text>
 
-                                    <Text style={{
-                                        color : "white",
-                                        fontSize : 16
-                                    }}>In order to connect to your spryng over Bluetooth, Android requires your device's location services to be on, and Spryng need permission to access it. </Text>
                                     <View style={{
                                         width:"100%",
                                         alignItems:"center"
@@ -201,6 +243,13 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
                                     {/*    </TouchableOpacity>*/}
                                     {/*</View>*/}
                                 </View>
+                                <View
+                                    style={{
+                                        flex : 3,
+                                        flexDirection:"column",
+                                        justifyContent : "center"
+                                    }}
+                                ></View>
 
                             </View>
                             {showLoadingModal ?(<LoadingModal callback={() => {}} message={""}/>) : (<></>) }

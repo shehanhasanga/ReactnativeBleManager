@@ -315,7 +315,7 @@ function* getDeviceStatusUpdates(action: {
 function countdown(secs) {
   return eventChannel(emitter => {
         BackgroundTimer.runBackgroundTimer(() => {
-              console.log("called the set interval function ++++++++++++++++++++++++++++++++++++++++++++____________________")
+              // console.log("called the set interval function ++++++++++++++++++++++++++++++++++++++++++++____________________")
               secs -= 1
               if (secs > 0) {
                 emitter(secs)

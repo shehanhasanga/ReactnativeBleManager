@@ -2,13 +2,14 @@
 import {
   USERNAME,
   ACCESS_TOKEN,
-  REFRESH_TOKEN,
+  REFRESH_TOKEN, USERID,
 } from '../../services/storage/storage';
 
 export interface StorageState {
   [USERNAME]: NullableString;
   [ACCESS_TOKEN]: NullableString;
   [REFRESH_TOKEN]: NullableString;
+  [USERID] : NullableString;
   loaded?: boolean;
   error?: any;
   fetchingAccessTokenLock: boolean;
