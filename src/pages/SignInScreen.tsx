@@ -15,7 +15,7 @@ const SignInPage: FC= ({ theme,navigation}) => {
     return(
         <>
             <SafeAreaView>
-                <KeyboardAvoidingView>
+                <KeyboardAvoidingView behavior="padding">
                     <ScrollView>
                         <View>
                             <Image
