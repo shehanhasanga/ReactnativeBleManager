@@ -76,6 +76,7 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
     const scandevice = async () => {
         if(Platform.OS === 'ios') {
             // dispatch(startScanDevicesAction());
+            navigation.navigate('Scandevice')
         } else {
             const permission = await requestLocationPermission();
             if(permission){
