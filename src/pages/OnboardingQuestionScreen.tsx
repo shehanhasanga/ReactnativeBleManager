@@ -11,9 +11,12 @@ import {
     View, StyleSheet
 } from "react-native";
 import QuestionPageItem from "../components/listItems/QuestionPageItem";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 const OnboardingQuestionsScreen: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
+    const insets = useSafeAreaInsets();
+    const activeViewHeight = height - (insets.top + insets.bottom)
     const MAX_WIDTH = Dimensions.get('screen').width;
     const animation = useRef(new Animated.Value(0));
     const questions =  [
@@ -64,7 +67,7 @@ const OnboardingQuestionsScreen: FC= ({ theme,navigation}) => {
                             }}
                            >
                             {questions.map((question) => (
-                                <QuestionPageItem  question={question} key={question.id} callback={() => {handleAnimation()}} height={height} width={width}/>
+                                <QuestionPageItem  question={question} key={question.id} callback={() => {handleAnimation()}} height={activeViewHeight} width={width}/>
                             ))}
 
 
