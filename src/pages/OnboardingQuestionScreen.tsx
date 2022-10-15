@@ -8,7 +8,7 @@ import {
     Text,
     Animated,
     TouchableHighlightComponent, TouchableOpacity, TouchableOpacityComponent,
-    View, StyleSheet
+    View, StyleSheet, Platform
 } from "react-native";
 import QuestionPageItem from "../components/listItems/QuestionPageItem";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
@@ -58,7 +58,7 @@ const OnboardingQuestionsScreen: FC= ({ theme,navigation}) => {
     return(
         <>
             <SafeAreaView>
-                <KeyboardAvoidingView>
+                <KeyboardAvoidingView behavior ={Platform.OS === 'ios' ? 'padding' : null}>
                     <ScrollView>
                         <Animated.View
                             style={{
