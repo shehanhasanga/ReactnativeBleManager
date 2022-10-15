@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {BleDevice} from '../../models/Ble/BleDevice';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,6 +9,13 @@ type DeviceListItemProps = {
 
 const DeviceListItem: FC<DeviceListItemProps> = props => {
   const {device, callback} = props;
+  const [deviceId, setDeviceId] = useState(device.id);
+  useEffect(() => {
+      if(device.id.length > 20){
+          let deviceIdShort = device.id.substring(0, 20) + "..."
+          setDeviceId(deviceIdShort)
+      }
+  }, [])
   const name: string = device.name ? device.name : 'UnKnown'
   return (
     <TouchableOpacity style={{
