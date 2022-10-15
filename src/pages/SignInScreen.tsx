@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useRef} from "react";
 import {
     ImageBackground,
     SafeAreaView,
@@ -9,14 +9,26 @@ import {
     TextInput, KeyboardAvoidingView, ScrollView, Image, Dimensions, StyleSheet, Platform
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 const SignInPage: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
+    const insets = useSafeAreaInsets();
+    const scrollViewRef = React.useRef<ScrollView>()
+
+    const scrollToBottom = () => {
+        console.log("scolled---")
+        scrollViewRef.current?.scrollToEnd();
+    }
     return(
         <>
             <SafeAreaView>
                 <KeyboardAvoidingView behavior ={Platform.OS === 'ios' ? 'padding' : null}>
-                    <ScrollView>
-                        <View>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        showsVerticalScrollIndicator ={false}
+                                 showsHorizontalScrollIndicator={false}>
+                        <View style={{height : height - (insets.bottom + insets.top)}}>
                             <Image
                                 style={{
                                     height : height,
@@ -122,7 +134,8 @@ const SignInPage: FC= ({ theme,navigation}) => {
                                                         textAlign={'center'}
                                                         secureTextEntry={true}
                                                         placeholderTextColor="#979797"
-
+                                                        onFocus={() => scrollToBottom() }
+                                                        onBlur={() => console.log("focus lost") }
                                                     />
                                                 </View>
                                             </View>
