@@ -67,7 +67,7 @@ const DeviceListItem: FC<DeviceListItemProps> = props => {
                     <Text style={{
                         fontSize : 12,
                         color : "white"
-                    }}>{device.id}</Text>
+                    }}>{deviceId}</Text>
                 </View>
             </View>
             <Icon name="arrow-right" color="white"  size={30} />
