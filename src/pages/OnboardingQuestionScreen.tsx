@@ -20,13 +20,22 @@ const OnboardingQuestionsScreen: FC= ({ theme,navigation}) => {
         {
             "id": "723a714c-aaca-4c73-836b-3c92186b1589",
             "question": "What are your daily activities ?",
-            "choices":  "Working,Travel,Play,Perform,Meditate,earning,Teaching,other"
+            "choices":  "Working,Travel,Play,Perform,Meditate,earning,Teaching,other",
+            "type": "MCQ"
         },
         {
             "id": "d2f6a614-e719-4541-8181-0db68667fe8e",
             "question": "Do you have any hereditary conditions/diseases?",
-            "choices": "High blood pressure,Diabetes,Hemophilia,Other"
-        }]
+            "choices": "High blood pressure,Diabetes,Hemophilia,Other",
+            "type": "MCQ"
+        },
+        {
+            "id": "d2f6a614-e719-4541-8181-0db6866dd7fe8e",
+            "question": "How do you feel today ?",
+            "choices": null,
+            "type": "Text"
+        }
+        ]
     const [currentPage, setCurrentPage] = useState(0);
     const handleAnimation = () => {
         console.log()

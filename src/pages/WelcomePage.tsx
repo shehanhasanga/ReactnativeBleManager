@@ -1,6 +1,6 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import defaultTheme, {WithTheme} from "../theme/defaults";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     Image,
     KeyboardAvoidingView,
@@ -13,10 +13,22 @@ import {
     ImageBackground,
     TouchableOpacityComponent, TouchableOpacity, TextInput
 } from "react-native";
+import {RootState} from "../store/store";
 
 
 const WelcomePage: FC= ({ theme,navigation}) => {
+    const connectedDevices = useSelector(
+        (state: RootState) => state.bluetooth.connectedDeviceList,
+    );
+    useEffect( () => {
+        if(connectedDevices.length > 0) {
+            navigation.reset({
+                index: 0,
+                routes: [{name: 'SignInStartPage'}],
+            });
+        }
 
+    }, [connectedDevices])
     const navigateToGrantPermission = () => {
         navigation.navigate('GrantPermissionPage')
     }

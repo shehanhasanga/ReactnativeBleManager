@@ -7,7 +7,7 @@ import {
   Text,
   StyleSheet,
   View,
-  TouchableOpacity, Alert, PermissionsAndroid, Platform, ImageBackground,
+  TouchableOpacity, Alert, PermissionsAndroid, Platform, ImageBackground, RefreshControl,
 } from 'react-native';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../store/store";
@@ -15,7 +15,6 @@ import {initiateConnectionAction, startScanDevicesAction, stopScanAction} from "
 import DeviceListItem from "../components/listItems/DeviceListItem";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { BackHandler } from "react-native";
-
 type ScanDeviceProps = {
   navigation : any;
 };
@@ -46,7 +45,12 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
             stopScan();
             setScanning(false);
             setRefreshing(false);
-            props.navigation.navigate('HomeTabsPage', {deviceId: connectingDeviceId});
+            console.log("duplicate is found")
+            props.navigation.reset({
+              index: 0,
+              routes: [{name: 'SignInStartPage'}],
+            });
+            // props.navigation.navigate('SignInStartPage', {deviceId: connectingDeviceId});
           }
         }
       }
@@ -62,7 +66,6 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
     setScanning(false);
     setRefreshing(false);
     props.navigation.goBack();
-    console.log("going back from the device scan page=============-")
   }
 
   const dispatch = useDispatch();
@@ -161,12 +164,7 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
   return (
       // <>
       // </>
-    <SafeAreaView
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor : "#000000",
-      }}>
+    <SafeAreaView>
       {/*<ImageBackground*/}
       {/*    style={{*/}
       {/*      width: '100%',*/}
@@ -174,18 +172,7 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
       {/*    }}*/}
       {/*    source={require("../assets/images/connectdevice.jpg")}*/}
       {/*/>*/}
-      <View style={{
-        width : "100%",
-        padding :10,
-        marginTop :  30,
-        display : "flex",
-        flexDirection : "row",
-        justifyContent : "space-between",
-        alignItems : "center"
-      }}>
-        {/*<Text>Spryngs near you</Text>*/}
-        <Icon.Button name="arrow-left" color="#4C4C4C" size={24} backgroundColor = "#000"  onPress = {() => {toggleScan()}} />
-      </View>
+
       <View style={{
         backgroundColor : "#000000",
         height : '100%',
@@ -194,7 +181,17 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
         flexDirection : "column"
       }}
       >
-
+        <View style={{
+          width : "100%",
+          marginLeft :20,
+          marginTop :  30,
+          display : "flex",
+          flexDirection : "row",
+          justifyContent : "space-between",
+          alignItems : "center"
+        }}>
+          <Icon.Button name="arrow-left" color="#4C4C4C" size={30} backgroundColor = "#000"  onPress = {() => {goback()}} />
+        </View>
         {/*<ScrollView style={{*/}
         {/*  flex : 1*/}
         {/*}}*/}
@@ -292,6 +289,14 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
           }}
           >
             <FlatList
+                refreshControl={
+                  <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
+                      colors={["#9Bd35A", "#689F38"]} // for android
+                      tintColor={"#9Bd35A"} // for ios
+                  />
+                }
                 refreshing={refreshing}
                 onRefresh={onRefresh}
                 contentContainerStyle={{

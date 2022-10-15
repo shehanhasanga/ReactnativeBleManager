@@ -1,6 +1,12 @@
 import React, {FC} from "react";
-import {ImageBackground, SafeAreaView, View, Text, TouchableOpacityComponent, TouchableOpacity} from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import {
+    ImageBackground,
+    SafeAreaView,
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet
+} from "react-native";
 
 const SignInStartPage: FC= ({ theme,navigation}) => {
 
@@ -24,22 +30,12 @@ const SignInStartPage: FC= ({ theme,navigation}) => {
                 width : "100%"
             }}
             >
-                <View style={{
-                    width : "100%",
-                    padding :10,
-                    marginTop :  30,
-                    display : "flex",
-                    flexDirection : "row",
-                    justifyContent : "space-between",
-                    alignItems : "center"
-                }}>
-                    <Icon.Button name="arrow-left" color="#4C4C4C" size={24} backgroundColor = "#000"  onPress = {() => {}} />
-                </View>
                 <View
                     style={{
                         display : "flex",
                         height : "100%",
-                        width : "100%"
+                        width : "100%",
+                        marginTop :  30
                     }}
                 >
                     <View style={{
@@ -48,15 +44,14 @@ const SignInStartPage: FC= ({ theme,navigation}) => {
                     }}>
                         <Text style={{
                             marginTop : 10,
-                            fontSize : 26,
+                            ...styles.fontLarge,
                             color:"white",
                             textAlign:"center"
                         }}>Connect</Text>
                         <Text
                             style={{
-
                                 color : "rgba(255,255,255,0.5)",
-                                fontSize : 15,
+                                ...styles.fontNormal,
                                 marginTop : 10
                             }}
                         >Your SPRING is ready</Text>
@@ -77,7 +72,7 @@ const SignInStartPage: FC= ({ theme,navigation}) => {
                         <Text
                             style={{
                                 flex : 1,
-                                fontSize : 26,
+                                ...styles.fontLarge,
                                 color:"white",
                             }}
                         >Lets Get Started</Text>
@@ -88,7 +83,7 @@ const SignInStartPage: FC= ({ theme,navigation}) => {
                             <Text style={{
                                 fontWeight:"100",
                                 color : "rgba(255,255,255,0.5)",
-                                fontFamily : "Poppins-Regular"
+                                ...styles.fontNormal,
                             }}>Do you have a SPRING Account ?</Text>
                         </View>
 
@@ -104,10 +99,11 @@ const SignInStartPage: FC= ({ theme,navigation}) => {
                                     paddingVertical : 20,
                                     borderRadius : 26
                                 }}
+                                onPress={() => {navigation.navigate('SignInPage')}}
                             >
                                 <Text
                                     style={{
-                                        fontSize : 16,
+                                        ...styles.fontMedium,
                                         color:"white",
                                         fontWeight : "bold",
                                         textAlign : "center"
@@ -119,9 +115,8 @@ const SignInStartPage: FC= ({ theme,navigation}) => {
                         <Text
                             style={{
                                 flex : 3,
-                                fontSize : 12,
+                                ...styles.fontSmall,
                                 color:"rgba(255, 255,255,0.5)",
-                                fontFamily : "Poppins-Regular",
                                 lineHeight : 30,
                                 textAlign : "center",
                                 textDecorationLine : "underline"
@@ -134,5 +129,22 @@ const SignInStartPage: FC= ({ theme,navigation}) => {
         </SafeAreaView>
     )
 }
-
+const styles = StyleSheet.create({
+    fontLarge: {
+        fontFamily : "Poppins-Regular",
+        fontSize: 24,
+    },
+    fontMedium : {
+        fontFamily : "Poppins-Regular",
+        fontSize: 16,
+    },
+    fontSmall : {
+        fontFamily : "Poppins-Regular",
+        fontSize: 12,
+    },
+    fontNormal : {
+        fontFamily : "Poppins-Regular",
+        fontSize: 14,
+    }
+});
 export default SignInStartPage;

@@ -28,6 +28,7 @@ import Geolocation from 'react-native-geolocation-service';
 import LoadingModal from "../components/modals/LoadingModal";
 ;
 import BleManager from "react-native-ble-manager";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const GrantPermissionPage: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
@@ -155,7 +156,7 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
 
     return(
         <>
-            <SafeAreaView style={{ height : "100%", backgroundColor : "black"}}>
+            <SafeAreaView >
                 <KeyboardAvoidingView>
                     <ScrollView>
                         <View>
@@ -169,6 +170,16 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
                                 justifyContent : "center",
                                 alignItems : "center"
                             }}>
+                                <View style={{
+                                    width : "100%",
+                                    marginTop :  10,
+                                    display : "flex",
+                                    flexDirection : "row",
+                                    justifyContent : "space-between",
+                                    alignItems : "center"
+                                }}>
+                                    <Icon.Button name="arrow-left" color="#4C4C4C" size={30} backgroundColor = "#000"  onPress = {() => {navigation.goBack()}} />
+                                </View>
                                 <View
                                     style={{
                                         flex : 2,
@@ -219,29 +230,6 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
                                             }}>Connect to Spryng</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    {/*<Text style={{*/}
-                                    {/*    color : "white",*/}
-                                    {/*    fontSize : 16*/}
-                                    {/*}}> Please give Spryng permission to access your device's location. This is only used for Bluetooth pairing.*/}
-                                    {/*</Text>*/}
-                                    {/*<View style={{*/}
-                                    {/*    width:"100%",*/}
-                                    {/*    alignItems:"center"*/}
-                                    {/*}}>*/}
-                                    {/*    <TouchableOpacity style={{*/}
-                                    {/*        width : width * 0.9,*/}
-                                    {/*        margin : 20,*/}
-                                    {/*        padding : 20,*/}
-                                    {/*        alignItems:"center",*/}
-                                    {/*        backgroundColor:"white",*/}
-                                    {/*        borderRadius : 30*/}
-                                    {/*    }}>*/}
-                                    {/*        <Text style={{*/}
-                                    {/*            color : "black",*/}
-                                    {/*            fontWeight : "bold"*/}
-                                    {/*        }}>Grant location access</Text>*/}
-                                    {/*    </TouchableOpacity>*/}
-                                    {/*</View>*/}
                                 </View>
                                 <View
                                     style={{

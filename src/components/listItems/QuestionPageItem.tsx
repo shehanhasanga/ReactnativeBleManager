@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import {BleDevice} from '../../models/Ble/BleDevice';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TextInput, TextInputComponent, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 type QuestionPageItemProps = {
   height: number;
@@ -9,10 +9,14 @@ type QuestionPageItemProps = {
       id : string;
       question : string;
       choices : string | null;
+      type : QuestionType | any
   }
   callback: () => void;
 };
-
+enum QuestionType {
+    Text = 'Text',
+    MCQ = "MCQ"
+}
 const QuestionPageItem: FC<QuestionPageItemProps> = props => {
   const {height, width, callback, question} = props;
   // const name: string = device.name ? device.name : 'UnKnown'
@@ -39,7 +43,7 @@ const QuestionPageItem: FC<QuestionPageItemProps> = props => {
               flexDirection:"column",
 
           }}>
-              <View style={{flex:6,}}>
+              <View style={{flex:5}}>
                   <Image
                       style={{
                           height : "100%",
@@ -50,11 +54,12 @@ const QuestionPageItem: FC<QuestionPageItemProps> = props => {
               </View>
               <View
                   style={{
-                      flex:4,
-                      paddingHorizontal : 20
+                      flex:5,
+                      paddingHorizontal : 20,
+                      justifyContent : "flex-end"
                   }}>
                   <View style={{
-                      flex : 1,
+
                       justifyContent : "flex-end"
                   }}>
                       <Text style={{
@@ -65,8 +70,8 @@ const QuestionPageItem: FC<QuestionPageItemProps> = props => {
                           marginLeft :  10,
                       }}>{question.question}</Text>
                   </View>
-                  <View style={{flex : 3, flexDirection : "row", flexWrap:"wrap"}}>
-                      {choices.length > 0 && choices.map((choice, index) => (
+                  <View style={{ flexDirection : "row", flexWrap:"wrap", alignContent:"flex-end"}}>
+                      { (question.type == QuestionType.MCQ && choices.length > 0)  && choices.map((choice, index) => (
                           <View key={index} style={{
                               paddingHorizontal : 20,
                               paddingVertical : 10,
@@ -84,32 +89,73 @@ const QuestionPageItem: FC<QuestionPageItemProps> = props => {
                               }}>{choice} </Text>
                           </View>
                       ))}
+                      {question.type == QuestionType.Text &&
+                      <View style={{
+                          backgroundColor : "#232323",
+                          borderRadius : 30,
+                          flexDirection : "row",
+                          alignItems : "center",
+                          paddingHorizontal : 20,
+                          marginTop : 10,
+                          marginHorizontal :  10,
+                          flex : 1
+                      }}>
+                          <TextInput
+                              numberOfLines={4}
+                              multiline={true}
+                              style={{
+                                  padding: 20,
+                                  flex : 1,
+                                  color : "#979797",
+                                  ...styles.fontMedium
+                              }}
+
+                              placeholderTextColor="#979797"
+                              textAlignVertical = "top"
+                          />
+                      </View>
+                      }
 
                   </View>
-                  <View style={{flex : 1}}>
-                      <TouchableOpacity
+              </View>
+              <View style={{flex : 2, justifyContent : "center", marginHorizontal : 20}}>
+                  <TouchableOpacity
+                      style={{
+                          width : "100%",
+                          backgroundColor : "#F23847",
+                          alignSelf : "center",
+                          paddingVertical : 20,
+                          borderRadius : 26,
+                      }}
+                      onPress={callback}
+                  >
+                      <Text
                           style={{
-                              width : "90%",
-                              backgroundColor : "#F23847",
-                              alignSelf : "center",
-                              paddingVertical : 20,
-                              borderRadius : 26
+                              fontSize : 16,
+                              color:"white",
+                              fontWeight : "bold",
+                              textAlign : "center"
                           }}
-                          onPress={callback}
-                      >
-                          <Text
-                              style={{
-                                  fontSize : 16,
-                                  color:"white",
-                                  fontWeight : "bold",
-                                  textAlign : "center"
-                              }}
-                          >Next </Text>
-                      </TouchableOpacity>
-                  </View>
+                      >Next </Text>
+                  </TouchableOpacity>
               </View>
           </View>
       </View>
   );
 };
+
+const styles = StyleSheet.create({
+    fontLarge: {
+        fontFamily : "Poppins-Regular",
+        fontSize: 24,
+    },
+    fontMedium : {
+        fontFamily : "Poppins-Regular",
+        fontSize: 16,
+    },
+    fontSmall : {
+        fontFamily : "Poppins-Regular",
+        fontSize: 12,
+    }
+});
 export default QuestionPageItem;
