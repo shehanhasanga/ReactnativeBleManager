@@ -31,13 +31,13 @@ const SignInPage: FC= ({ theme,navigation}) => {
                         <View style={{height : height - (insets.bottom + insets.top)}}>
                             <Image
                                 style={{
-                                    height : height,
+                                    height : "100%",
                                     width : '100%',
                                 }}
                                 source={require("../assets/images/signin3.jpg")}
                             />
                             <View style={{
-                                height : height,
+                                height : "100%",
                                 width,
                                 color : "white",
                                 position : "absolute",
@@ -185,17 +185,20 @@ const SignInPage: FC= ({ theme,navigation}) => {
                                                 >Sign In </Text>
                                             </TouchableOpacity>
                                         </View>
+                                        <View style={{
+                                            flex : 3
+                                        }}>
+                                            <Text
+                                                style={{
+                                                    ...styles.fontSmall,
+                                                    color:"rgba(255, 255,255,0.5)",
+                                                    lineHeight : 30,
+                                                    textAlign : "center",
+                                                    textDecorationLine : "underline"
+                                                }}
+                                            >Continue without Sign In</Text>
+                                        </View>
 
-                                        <Text
-                                            style={{
-                                                flex : 3,
-                                                ...styles.fontSmall,
-                                                color:"rgba(255, 255,255,0.5)",
-                                                lineHeight : 30,
-                                                textAlign : "center",
-                                                textDecorationLine : "underline"
-                                            }}
-                                        >Continue without Sign In</Text>
 
                                     </View>
                                 </View>
