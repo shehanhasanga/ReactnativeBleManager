@@ -186,10 +186,10 @@ const Home: FC = () => {
             {/*<Stack.Screen component={ChartView} name={'ChartView'} options={{headerShown : false}}/>*/}
             {/*<Stack.Screen component={HomeDrawerPage} name={'HomeDrawerPage'} options={{headerShown : false}}/>*/}
 
-
+            <Stack.Screen component={SignInStartPage} name={'SignInStartPage'} options={{headerShown : false}}/>
             <Stack.Screen component={WelcomePage} name={'WelcomePage'} options={{headerShown : false}}/>
             <Stack.Screen component={SignInPage} name={'SignInPage'} options={{headerShown : false}}/>
-            <Stack.Screen component={SignInStartPage} name={'SignInStartPage'} options={{headerShown : false}}/>
+
             <Stack.Screen component={OnboardingQuestionsScreen} name={'OnboardingQuestionsScreen'} options={{headerShown : false}}/>
             <Stack.Screen component={StartView} name={'StartView'} options={{headerShown : false}}/>
             <Stack.Screen component={UserImportantThingsPage} name={'UserImportantThingsPage'} options={{headerShown : false}}/>

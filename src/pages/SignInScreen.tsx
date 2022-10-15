@@ -6,16 +6,15 @@ import {
     Text,
     TouchableOpacityComponent,
     TouchableOpacity,
-    TextInput, KeyboardAvoidingView, ScrollView, Image, Dimensions, StyleSheet
+    TextInput, KeyboardAvoidingView, ScrollView, Image, Dimensions, StyleSheet, Platform
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
 const SignInPage: FC= ({ theme,navigation}) => {
     const { width, height } = Dimensions.get('window');
     return(
         <>
             <SafeAreaView>
-                <KeyboardAvoidingView behavior="padding">
+                <KeyboardAvoidingView behavior ={Platform.OS === 'ios' ? 'padding' : null}>
                     <ScrollView>
                         <View>
                             <Image
