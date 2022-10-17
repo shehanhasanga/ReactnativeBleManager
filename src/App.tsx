@@ -59,6 +59,7 @@ import WelcomePage from "./pages/WelcomePage";
 import SignInStartPage from "./pages/SignInStartScreen";
 import SignInPage from "./pages/SignInScreen";
 import OnboardingQuestionsScreen from "./pages/OnboardingQuestionScreen";
+import DropDownPage from "./pages/DropDownFile";
 // import DrawerPage from "./pages/DrawerPage";
 // import {Device} from "react-native-ble-plx";
 
@@ -185,7 +186,8 @@ const Home: FC = () => {
             {/*<Stack.Screen component={DrawerPage} name={'DrawerPage'} options={{headerShown : false}}/>*/}
             {/*<Stack.Screen component={ChartView} name={'ChartView'} options={{headerShown : false}}/>*/}
             {/*<Stack.Screen component={HomeDrawerPage} name={'HomeDrawerPage'} options={{headerShown : false}}/>*/}
-
+            {/*<Stack.Screen component={DropDownPage} name={'DropDownPage'} options={{headerShown : false}}/>*/}
+            <Stack.Screen component={HomeTabsPage} name={'HomeTabsPage'} options={{headerShown : false}}/>
             <Stack.Screen component={SignInStartPage} name={'SignInStartPage'} options={{headerShown : false}}/>
             <Stack.Screen component={WelcomePage} name={'WelcomePage'} options={{headerShown : false}}/>
             <Stack.Screen component={SignInPage} name={'SignInPage'} options={{headerShown : false}}/>
@@ -200,7 +202,7 @@ const Home: FC = () => {
             <Stack.Screen component={ScanDevice} name={'Scandevice'} options={{headerStyle:{
                     backgroundColor : '#353535',
                 }, headerTintColor: '#fff', headerShown : false}  }/>
-            <Stack.Screen component={HomeTabsPage} name={'HomeTabsPage'} options={{headerShown : false}}/>
+            {/*<Stack.Screen component={HomeTabsPage} name={'HomeTabsPage'} options={{headerShown : false}}/>*/}
             <Stack.Screen component={StartSetupPage} name={'StartSetupPage'} options={{headerShown : false}}/>
             <Stack.Screen component={TermsPage} name={'TermsPage'} options={{headerShown : false}}/>
 
