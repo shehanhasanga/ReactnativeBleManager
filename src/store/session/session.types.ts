@@ -9,7 +9,26 @@ export interface TherapyConfig {
 }
 
 export interface SessionState {
+    currentSession : TherapySession,
     sessionList : Array<Session>
+}
+
+export enum SessionEventTypes {
+    SESSION_START = "SESSION_START",
+    DEVICE_ON = "DEVICE_ON",
+    MODE_CHANG = "MODE_CHANG",
+    FREQUENCY_CHANG = "FREQUENCY_CHANG",
+    STOP = "STOP",
+    POWER_OFF = "POWER_OFF",
+    HEARTBEAT = "HEARTBEAT"
+}
+
+export interface TherapySession {
+    sessionId : string,
+    deviceId : string,
+    userId : string,
+    event? :SessionEventTypes,
+    eventInfo : {mode :  number, frequency :  number}
 }
 
 export interface Session {
@@ -28,12 +47,18 @@ export interface CommandArrayContent {
     commandArray : Array<{key: number, commands?: Array<ActionCommand>}>
 }
 
+export const SAVE_SESSION = 'SAVE_SESSION';
 export const FETCH_SESSION = 'FETCH_SESSION';
 export const UPDATE_SESSION = 'UPDATE_SESSION';
 export const FETCH_SESSION_FINISHED = 'FETCH_SESSION_FINISHED';
 export const SYNC_COMMAND = 'SYNC_COMMAND';
 export const UPDATE_ELAPSE_TIME  = 'UPDATE_ELAPSE_TIME';
 export const START_SESSION  = 'START_SESSION';
+
+export interface SaveSessionAction {
+    type: typeof SAVE_SESSION;
+    payload : {eventType : SessionEventTypes,  eventInfo : {mode: number, frequency : number}};
+}
 
 export interface FetchSessionAction {
     type: typeof FETCH_SESSION;

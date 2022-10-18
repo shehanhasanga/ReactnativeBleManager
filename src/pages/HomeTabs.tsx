@@ -33,36 +33,36 @@ enum Tabs {
     ADD = "Add",
     PROFILE = "Profile"
 }
+export enum FrequencyTypes {
+    LOW = 0,
+    MEDIUM = 1,
+    HIGH = 2
+}
+
+export enum Modes {
+    GRADUATED = 0,
+    PULSATED = 1,
+}
+export interface TherapyConfiguration {
+    mode :  Modes,
+    frequency : FrequencyTypes,
+    time : number
+}
+
 
 const HomeTabsPage: FC= ({ route, navigation  }) => {
     // const { deviceId } = route.params;
   const Tab = createBottomTabNavigator();
-    const { width, height } = Dimensions.get('window');
-    const insets = useSafeAreaInsets();
-    const availableHeight = height - (insets.bottom + insets.top);
   const [showConfigDialog, setShowConfigDailog] = useState(false);
   const [currentTab , setCurrentTab] = useState(Tabs.ADD);
-    const [openFrequency, setOpenFrequency] = useState(false);
-    const [frequency, setFrequency] = useState(1);
-    const [frequencyItems, setFrequencyItems] = useState([
-        {label: 'Low', value: 1},
-        {label: 'Medium', value: 2},
-        {label: 'High', value: 3}
-    ]);
 
-    const [openMode, setOpenMode] = useState(false);
-    const [value2, setValue2] = useState(1);
-    const [items2, setItems2] = useState([
-        {label: 'Graduated', value: 1},
-        {label: 'Pulsated', value: 2}
-    ]);
 
-    let therapyConfigData : TherapyConfig = {
-        pattern : 2,
-        itensity : 1,
+    let therapyConfigData : TherapyConfiguration = {
+        frequency : FrequencyTypes.LOW,
+        mode : Modes.GRADUATED,
         time : 10
     }
-     const [therapyConfig, setTherapyConfig] = useState<TherapyConfig>(therapyConfigData)
+     const [therapyConfig, setTherapyConfig] = useState<TherapyConfiguration>(therapyConfigData)
 
   const showConfig = () => {
       setShowConfigDailog(true)
@@ -70,90 +70,17 @@ const HomeTabsPage: FC= ({ route, navigation  }) => {
   }
 
 
-    const onFrequencyOpen = useCallback(() => {
-        setOpenMode(false);
-    }, []);
-
-    const onModeOpen = useCallback(() => {
-        setOpenFrequency(false);;
-    }, []);
-    const animation = useRef(new Animated.Value(0));
-    const updateConfigs = (therapyConfignew : TherapyConfig) => {
+    const updateConfigs = (therapyConfignew : TherapyConfiguration) => {
         console.log(therapyConfignew)
         setTherapyConfig(therapyConfignew)
         setShowConfigDailog(false)
     }
-    const closeConfigDialog = () => {
-        console.log("closing dialog")
-        Animated.timing(animation.current, {
-            toValue: 0,
-            duration: 200,
-            easing: Easing.linear,
-            useNativeDriver: true,
-        }).start( () => {
-            console.log("closed the dialog")
-            setShowConfigDailog(false)
-        });
 
-    }
-    const handleAnimation = () => {
-        Animated.spring(animation.current, {
-            toValue: -(availableHeight / 1.8),
-            duration: 3000,
-            useNativeDriver: true,
-        }).start();
-        console.log(animation.current)
-    };
-    const SelectItem:FC = () => {
-        return (
-
-            <View style={{
-                marginTop: 10,
-                width : "100%",
-                paddingHorizontal : 10,
-                flexDirection : "row",
-                alignItems : "center",
-                position:'relative'
-            }}>
-                <Text style={{
-                    ...styles.fontMedium,
-                    color : "#979797",
-                    flex :1,
-
-                }}>Freequency</Text>
-                <View style={{
-                    flex: 2,
-                    height : "100%",
-                }}>
-                    <TouchableOpacity style={{
-                        flex :1,
-                        paddingHorizontal : 20,
-                        justifyContent : "center"
-                    }}>
-                        <DropDownPicker
-                            zIndex={100000}
-                            zIndexInverse={1000}
-
-                            open={openFrequency}
-                            value={frequency}
-                            items={frequencyItems}
-                            setOpen={setOpenFrequency}
-                            setValue={setFrequency}
-                            setItems={setFrequencyItems}
-                        />
-                    </TouchableOpacity>
-                </View>
-
-            </View>
-
-
-        )
-    }
 
     return(
         <SafeAreaView>
             {showConfigDialog &&
-                <TherapyConfigDialog therapyConfig={therapyConfig} callback={(therapyConfig) => {updateConfigs(therapyConfig)}}/>
+                <TherapyConfigDialog therapyConfig={therapyConfig} callback={(therapyConfignew) => {updateConfigs(therapyConfignew)}}/>
             }
             <View style={{
                 width : "100%",
@@ -166,8 +93,8 @@ const HomeTabsPage: FC= ({ route, navigation  }) => {
                     flex : 1,
                     backgroundColor : "blue"
                 }}>
-                    {currentTab == Tabs.DASHBOARD && <StartWorkoutPage showConfigCB={showConfig} />}
-                    {currentTab == Tabs.ADD && <SignInStartPage />}
+                    {currentTab == Tabs.ADD && <StartWorkoutPage showConfigCB={showConfig} therapyConfig={therapyConfig}/>}
+                    {currentTab == Tabs.DASHBOARD && <SignInStartPage />}
                     {currentTab == Tabs.PROFILE && <SignInPage />}
 
                 </View>

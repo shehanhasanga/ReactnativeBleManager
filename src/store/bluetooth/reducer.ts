@@ -3,7 +3,7 @@ import {
   BluetoothState,
   DEVICE_FOUND,
   DISCONNECTED_FROM_DEVICE,
-  INITIATE_CONNECTION,
+  INITIATE_CONNECTION, RESET_COMMAND_TIMER,
   SEND_ADAPTER_STATUS,
   SEND_CONNECTION_FAIL,
   SEND_CONNECTION_SUCCESS,
@@ -69,6 +69,7 @@ const BLEReducer = (
         isConnectingToDevice: false,
         availableDevices : [],
         connectedDeviceList: state.connectedDeviceList.concat(action.payload),
+        connectedDevice : action.payload
       };
     case DISCONNECTED_FROM_DEVICE:
       if(action.payload.success){
@@ -113,9 +114,21 @@ const BLEReducer = (
         adapterStatus: action.payload,
       };
     case SEND_TIME_VALUE:
+      let lastValue = state.timerValue;
+      let newTimerValue = state.timerValue - 1
+      if(lastValue <= 0) {
+        newTimerValue = 0;
+      }
+
+      return {
+        ...state,
+        timerValue : newTimerValue,
+      };
+    case RESET_COMMAND_TIMER:
       return {
         ...state,
         timerValue : action.payload,
+        sessionTime : action.payload
       };
     default:
       return state;

@@ -187,9 +187,10 @@ const Home: FC = () => {
             {/*<Stack.Screen component={ChartView} name={'ChartView'} options={{headerShown : false}}/>*/}
             {/*<Stack.Screen component={HomeDrawerPage} name={'HomeDrawerPage'} options={{headerShown : false}}/>*/}
             {/*<Stack.Screen component={DropDownPage} name={'DropDownPage'} options={{headerShown : false}}/>*/}
+            <Stack.Screen component={WelcomePage} name={'WelcomePage'} options={{headerShown : false}}/>
             <Stack.Screen component={HomeTabsPage} name={'HomeTabsPage'} options={{headerShown : false}}/>
             <Stack.Screen component={SignInStartPage} name={'SignInStartPage'} options={{headerShown : false}}/>
-            <Stack.Screen component={WelcomePage} name={'WelcomePage'} options={{headerShown : false}}/>
+
             <Stack.Screen component={SignInPage} name={'SignInPage'} options={{headerShown : false}}/>
 
             <Stack.Screen component={OnboardingQuestionsScreen} name={'OnboardingQuestionsScreen'} options={{headerShown : false}}/>

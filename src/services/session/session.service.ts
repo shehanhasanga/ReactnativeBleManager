@@ -1,5 +1,12 @@
 
 import {API_ENDPOINT_GET_SESSION} from "../api/endpoints";
+import {TherapySession} from "../../store/session/session.types";
+
+export const saveSessionData = (
+    therapySession : TherapySession
+) => {
+    return saveSessionRequest(therapySession);
+};
 
 export const getSession = (
     deviceId : string,
@@ -21,6 +28,23 @@ export const updateSession = (
         userId,
         elapseTime
     });
+};
+
+export const saveSessionRequest = (therapySession : TherapySession) => {
+    const authEndpoint = API_ENDPOINT_GET_SESSION;
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+
+
+    const requestOptions = {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(therapySession),
+    };
+    console.log(JSON.stringify(therapySession))
+    return fetch(authEndpoint, requestOptions);
 };
 
 export const getSessionRequest = (body: {deviceId: string, userId : string}) => {

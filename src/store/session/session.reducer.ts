@@ -57,7 +57,6 @@ const sessionReducer = (
                 })
             }
         case START_SESSION:
-            console.log("session has started in session reducer+++++++++++++++++++++")
             if(action.deviceId){
                 if(Platform.OS == 'ios'){
                     return {

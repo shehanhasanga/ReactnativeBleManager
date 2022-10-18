@@ -1,21 +1,50 @@
-import {call, takeEvery, put} from "redux-saga/effects";
+import {call, put, takeEvery} from "redux-saga/effects";
 import {
     FETCH_SESSION,
     FetchSessionAction,
-    Session, SessionState, START_SESSION, StartSessionAction, SYNC_COMMAND, SyncCommandWithDeviceAction,
-    TherapyConfig,
+    SAVE_SESSION,
+    SaveSessionAction,
+    Session,
+    SessionEventTypes,
+    SessionState,
+    START_SESSION,
+    StartSessionAction,
+    SYNC_COMMAND,
+    SyncCommandWithDeviceAction,
+    TherapySession,
     UPDATE_SESSION,
     UpdateSessionAction
 } from "./session.types";
-import {getSession, updateSession} from "../../services/session/session.service";
+import {getSession, saveSessionData, updateSession} from "../../services/session/session.service";
 import {fetchSessionFinished, updateElapseTimeAction, updateSesstion} from "./session.action";
-import Command, {CommandType} from "../../models/Ble/commands/Command";
 import {store} from "../store";
 import {ActionCommand} from "../bluetooth/bluetooth.types";
 import {sendCommandWithActionCommand} from "../bluetooth/actions";
 import {Platform} from "react-native";
-import {miniSerializeError} from "@reduxjs/toolkit";
 
+
+function* saveSession(action: SaveSessionAction) {
+    console.log("got session save in session saga ++++++++++++++++++")
+    let {eventType ,  eventInfo} =  action.payload
+    let session : TherapySession = {
+        userId : "1234",
+        deviceId : "1234",
+        event : SessionEventTypes.SESSION_START,
+        eventInfo : eventInfo
+    }
+    const response: Response = yield call(
+        saveSessionData,
+        session
+    );
+    const data = yield call([response, response.json]);
+    if (data.error) {
+        console.log("error occured while sending data")
+        console.log(data.error)
+    } else {
+        console.log("sauucess saving data ")
+        console.log(data)
+    }
+}
 
 
 function* fetchSession(action: FetchSessionAction) {
@@ -201,6 +230,7 @@ function* startSession(action: StartSessionAction) {
 
 
 export function* watchSessionActions() {
+    yield takeEvery(SAVE_SESSION, saveSession);
     yield takeEvery(FETCH_SESSION, fetchSession);
     yield takeEvery(UPDATE_SESSION, updateSessionData);
     yield takeEvery(SYNC_COMMAND, syncCommandWithDevice);

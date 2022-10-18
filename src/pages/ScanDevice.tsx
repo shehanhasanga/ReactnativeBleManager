@@ -48,7 +48,7 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
             console.log("duplicate is found")
             props.navigation.reset({
               index: 0,
-              routes: [{name: 'SignInStartPage'}],
+              routes: [{name: 'HomeTabsPage'}],
             });
             // props.navigation.navigate('SignInStartPage', {deviceId: connectingDeviceId});
           }
@@ -72,9 +72,9 @@ const ScanDevice: FC<ScanDeviceProps> = props => {
   const devices = useSelector(
       (state: RootState) => state.bluetooth.availableDevices,
   );
-  const isConnected = useSelector(
-      (state: RootState) => !!state.bluetooth.connectedDevice,
-  );
+  // const isConnected = useSelector(
+  //     (state: RootState) => !!state.bluetooth.connectedDevice,
+  // );
   const isScanning = useSelector(
       (state: RootState) => state.bluetooth.isScanning,
   );

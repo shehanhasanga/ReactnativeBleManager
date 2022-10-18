@@ -15,17 +15,17 @@ import {
   GetDeviceStatusData,
   GetServiceInfo,
   INITIATE_CONNECTION,
-  InitiateConnectionAction, SCAN_DETACHED_DEVICES, ScanAndConnectDetachedDevice,
+  InitiateConnectionAction, RESET_COMMAND_TIMER, ResetCommandTimer, SCAN_DETACHED_DEVICES, ScanAndConnectDetachedDevice,
   SEND_ADAPTER_STATUS,
   SEND_COMMAND,
-  SEND_COMMAND_ACK,
+  SEND_COMMAND_ACK, SEND_COMMANDS,
   SEND_CONNECTION_FAIL,
   SEND_CONNECTION_SUCCESS,
   SEND_DEVICE_STATUS,
   SEND_TIME_VALUE,
   SendAckForCommand,
   SendAdapterStatusAction,
-  SendCommand,
+  SendCommand, SendCommands,
   SendConnectFailAction,
   SendConnectSuccessAction,
   SendDeviceStatusAction,
@@ -57,6 +57,16 @@ const convertCommandToActionCommand = (command: Command): ActionCommand => {
     commandType: command.type,
   };
   return actionCommand;
+};
+
+export const sendCommandsArray = (commands: Command[], time : number, eventInfo : {mode : number, frequency : number}): SendCommands => {
+  let actionCommands = commands.map((command) => {
+    return convertCommandToActionCommand(command)
+  })
+  return {
+    type: SEND_COMMANDS,
+    payload: {actionCommands, time, eventInfo},
+  };
 };
 
 export const sendCommand = (command: Command): SendCommand => {
@@ -212,6 +222,15 @@ export const sendTimeValues = (
 ): SendTimerValues => {
   return {
     type: SEND_TIME_VALUE,
+    payload: time,
+  };
+};
+
+export const resetCommandTimerAction = (
+    time: number,
+): ResetCommandTimer => {
+  return {
+    type: RESET_COMMAND_TIMER,
     payload: time,
   };
 };

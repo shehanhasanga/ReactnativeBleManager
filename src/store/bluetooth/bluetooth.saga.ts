@@ -1,7 +1,7 @@
 import {Device} from 'react-native-ble-plx';
 import {AnyAction} from 'redux';
 import {END, eventChannel, TakeableChannel} from 'redux-saga';
-import {call, cancelled, fork, put, take, takeEvery, takeLatest} from 'redux-saga/effects';
+import {call, cancelled, delay, fork, put, take, takeEvery, takeLatest} from 'redux-saga/effects';
 import {sagaActionConstants} from './bluetooth.reducer';
 import bluetoothLeManager, {BLECommand} from '../../services/bluetooth/BluetoothLeManager';
 import BackgroundTimer from 'react-native-background-timer';
@@ -10,14 +10,14 @@ import {
   deviceFoundAction,
   disconnectedSuccessAction,
   getCurrentDeviceStatusData,
+  resetCommandTimerAction,
   scanAndConnectDetachedDevice,
   sendAdapterStatusAction,
+  sendCommand as sendCommandAction,
   sendConnectFailAction,
   sendConnectSuccessAction,
   sendDeviceStatusAction,
-  sendTimeValues,
-  startTimerAction,
-    sendCommand as sendCommandAction
+  sendTimeValues
 } from "./actions";
 import {
   ActionCommand,
@@ -27,6 +27,7 @@ import {
   INITIATE_CONNECTION,
   SCAN_DETACHED_DEVICES,
   SEND_COMMAND,
+  SEND_COMMANDS,
   START_SCAN_DEVICES,
   START_TIMER,
   STOP_SCAN_DEVICES
@@ -35,10 +36,10 @@ import {BleDevice} from "../../models/Ble/BleDevice";
 import {store} from '../store';
 import blemanager, {AdapterPayload, StreamingTypes} from "../../services/bluetooth/BLEManager";
 import Command, {CommandType} from "../../models/Ble/commands/Command";
-import {startSessionAction, syncCommandWithDeviceAction} from "../session/session.action";
-import {setItem, setMulti} from "../storage/storage.actions";
-import {ACCESS_TOKEN, DEVICEID, REFRESH_TOKEN, USERID, USERNAME} from "../../services/storage/storage";
+import {saveSession, startSessionAction, syncCommandWithDeviceAction} from "../session/session.action";
+import {setItem} from "../storage/storage.actions";
 import {closeLoader, openLoader} from "../global/actions";
+import {SessionEventTypes, TherapySession} from "../session/session.types";
 
 type TakeableDevice = {
   payload: {id: string; name: string; serviceUUIDs: string};
@@ -235,6 +236,49 @@ function* getAdapterUpdates() {
  return bleCommand;
 }
 
+const createCommand = (commandType : CommandType, deviceId: string) :BLECommand => {
+  console.log(deviceId + "device id for connected device +++++++")
+  let command = new Command(deviceId, commandType);
+  if(commandType == CommandType.PAUSE){
+    command =  new Command(deviceId,CommandType.PAUSE)
+  }else {
+
+  }
+  let bleCommand : BLECommand = {
+    deviceId : command.deviceId,
+    serviceUUID : command.serviceUUID,
+    characteristicUUID : command.characteristicUUID,
+    data : command.getCommandData()
+  }
+  return bleCommand
+}
+
+function* sendCommandsArray(action: {
+  type: typeof SEND_COMMAND;
+  payload: {actionCommands :ActionCommand[], time : number, eventInfo : {mode: number, frequency : number}};
+}) {
+  let actioncommands = action.payload.actionCommands
+  let bleCommands : BLECommand[] = actioncommands.map((actioncommand) => {
+    return convertActionCommandToBleCommand(actioncommand);
+  })
+  for(let bleCommand of  bleCommands){
+    console.log("writing command ++" + bleCommand.data)
+    let success = yield call(blemanager.writeCharacteristicWithResponse,bleCommand)
+    yield delay(100)
+
+  }
+  yield put(resetCommandTimerAction(action.payload.time));
+
+  let therapySession = {
+    eventType : SessionEventTypes.SESSION_START,
+    eventInfo : action.payload.eventInfo
+  }
+  console.log("sending therapy session ++++++++++++ start")
+  yield put(saveSession(therapySession.eventType, therapySession.eventInfo))
+
+}
+
+
 function* sendCommand(action: {
   type: typeof SEND_COMMAND;
   payload: ActionCommand;
@@ -355,6 +399,46 @@ export function* timerSaga(action: {
       while (true) {
         // take(END) will cause the saga to terminate by jumping to the finally block
         let seconds = yield take(chan)
+        let currentTimer = store.getState().bluetooth.timerValue
+        let connectedDevice =  store.getState().bluetooth.connectedDevice
+        let sessionTime = store.getState().bluetooth.sessionTime
+        let processedTime =  sessionTime - currentTimer
+        console.log("processed time :---------------" + processedTime)
+        if(connectedDevice){
+          let filtered =  store.getState().bluetooth.devicesStatus.filter((device)=> device.id == connectedDevice.id)
+          if(filtered.length > 0){
+            let status = filtered[0].status;
+            if(status){
+              let isPaused = status.pauseFlag
+              if(isPaused == 0 ){
+                  if(currentTimer == 1 ){ // final second of the configuration. sends the pause command
+                    let bleCommand = createCommand(CommandType.PAUSE, connectedDevice.id)
+                    let success = yield call(blemanager.writeCharacteristicWithResponse,bleCommand);
+
+                } else if (processedTime > 0 && processedTime % 30 == 0) {
+                    console.log("changing device mode ++++++++++++++++")
+                    // sends the mode changing command
+                    let currentMode = status.apWorkMode
+                    if(currentMode == 0){ // this is graduated
+                        let changeModeCommand: BLECommand = createCommand(CommandType.CHANGE_MODE_1, connectedDevice.id)
+                        yield call(blemanager.writeCharacteristicWithResponse,changeModeCommand);
+                        yield delay(100)
+                        let currentModeCommand: BLECommand = createCommand(CommandType.CHANGE_MODE_2, connectedDevice.id)
+                        yield call(blemanager.writeCharacteristicWithResponse,currentModeCommand);
+                    }else { // pulsated mode here
+                      // let changeModeCommand
+                      let changeModeCommand: BLECommand = createCommand(CommandType.CHANGE_MODE_2, connectedDevice.id)
+                      yield call(blemanager.writeCharacteristicWithResponse,changeModeCommand);
+                      yield delay(100)
+                      let currentModeCommand: BLECommand = createCommand(CommandType.CHANGE_MODE_1, connectedDevice.id)
+                      yield call(blemanager.writeCharacteristicWithResponse,currentModeCommand);
+                    }
+                  }
+              }
+            }
+          }
+        }
+
         yield put(sendTimeValues(seconds))
         if((seconds != 0) && (seconds % 30 == 0)){
           yield put(scanAndConnectDetachedDevice())
@@ -388,6 +472,7 @@ export function* bluetoothSaga() {
   );
   yield takeEvery(GET_ADAPTER_STATUS, getAdapterUpdates);
   yield takeEvery(SEND_COMMAND, sendCommand);
+  yield takeEvery(SEND_COMMANDS, sendCommandsArray);
   yield takeEvery(GET_DEVICESTATUS, getDeviceStatusUpdates);
   yield takeEvery(DISCONNECT_FROM_DEVICE, disconnectFromDevice);
 

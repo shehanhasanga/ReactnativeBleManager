@@ -84,14 +84,17 @@ const GrantPermissionPage: FC= ({ theme,navigation}) => {
                 setShowLoadingModal(true);
                 Geolocation.getCurrentPosition(
                     (position) => {
+                        console.log("position got++++++++++++++++")
                         setShowLoadingModal(false);
                         navigation.navigate('Scandevice')
                     },
                     (error) => {
                         // See error code charts below.
-                        // console.log(error.code, error.message);
+                        console.log(error.message);
+                        setShowLoadingModal(false);
+                        navigation.navigate('Scandevice')
                     },
-                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+                    { enableHighAccuracy: false, timeout: 1500, maximumAge: 10000 }
                 );
                 // showAlert("You can connect to device", "Location permissions are enabled")
             } else {

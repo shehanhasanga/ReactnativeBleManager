@@ -1,34 +1,34 @@
 import React, {FC, useCallback, useEffect, useRef, useState} from "react";
-import {TherapyConfig} from "../../store/session/session.types";
 import {Animated, Dimensions, Easing, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {FrequencyTypes, Modes, TherapyConfiguration} from "../../pages/HomeTabs";
 
 type TherapyConfigDialogProps = {
-    therapyConfig: TherapyConfig;
-    callback: (therapyConfig: TherapyConfig) => void;
+    therapyConfig: TherapyConfiguration;
+    callback: (therapyConfig: TherapyConfiguration) => void;
 };
 const TherapyConfigDialog: FC<TherapyConfigDialogProps> = props => {
     let {therapyConfig, callback} = props
     const { width, height } = Dimensions.get('window');
     const insets = useSafeAreaInsets();
     const [showConfigDialog, setShowConfigDailog] = useState(false);
-    const availableHeight = height - (insets.bottom + insets.top);
+    const availableHeight = height - (insets.top);
     const [openFrequency, setOpenFrequency] = useState(false);
-    const [frequency, setFrequency] = useState(therapyConfig.itensity);
+    const [frequency, setFrequency] = useState(therapyConfig.frequency);
     const [frequencyItems, setFrequencyItems] = useState([
-        {label: 'Low', value: 1},
-        {label: 'Medium', value: 2},
-        {label: 'High', value: 3}
+        {label: 'Low', value: FrequencyTypes.LOW},
+        {label: 'Medium', value: FrequencyTypes.MEDIUM},
+        {label: 'High', value: FrequencyTypes.HIGH}
     ]);
     useEffect(() => {
         showConfig()
     }, []);
     const [openMode, setOpenMode] = useState(false);
-    const [modeValue, setModeValue] = useState(therapyConfig.pattern);
+    const [modeValue, setModeValue] = useState(therapyConfig.mode);
     const [modeItems, setModeItems] = useState([
-        {label: 'Graduated', value: 1},
-        {label: 'Pulsated', value: 2}
+        {label: 'Graduated', value: Modes.GRADUATED},
+        {label: 'Pulsated', value: Modes.PULSATED}
     ]);
     const showConfig = () => {
         setShowConfigDailog(true)
@@ -53,9 +53,9 @@ const TherapyConfigDialog: FC<TherapyConfigDialogProps> = props => {
         }).start( () => {
             console.log("closed the dialog")
             setShowConfigDailog(false)
-            let therapyConfignew : TherapyConfig = {
-                pattern : modeValue,
-                itensity : frequency,
+            let therapyConfignew : TherapyConfiguration = {
+                frequency : frequency,
+                mode : modeValue,
                 time : 10
             }
             callback(therapyConfignew)

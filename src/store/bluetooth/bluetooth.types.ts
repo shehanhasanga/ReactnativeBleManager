@@ -7,6 +7,7 @@ import {Session} from "../session/session.types";
 export const GET_ADAPTER_STATUS = 'ADAPTER_STATUS';
 export const GET_SERVICES_INFO = 'GET_SERVICES_INFO';
 export const SEND_COMMAND = 'SEND_COMMAND';
+export const SEND_COMMANDS = 'SEND_COMMANDS';
 export const GET_DEVICESTATUS = 'GET_DEVICESTATUS';
 export const SEND_COMMAND_ACK = 'SEND_COMMAND_ACK'
 
@@ -25,7 +26,7 @@ export const SEND_ADAPTER_STATUS = 'SEND_ADAPTER_STATUS'
 
 export const START_TIMER = 'START_TIMER'
 export const SEND_TIME_VALUE = 'SEND_TIME_VALUE'
-
+export const RESET_COMMAND_TIMER = 'RESET_COMMAND_TIMER'
 
 export enum AckType {
     STOP = 'STOP',
@@ -42,14 +43,15 @@ export enum AckType {
 export interface BluetoothState {
     availableDevices: Array<BleDevice>;
     isConnectingToDevice: boolean;
-    connectedDevice: string | null;
+    connectedDevice: BleDevice;
     connectedDeviceList : Array<BleDevice>;
     isScanning: boolean;
     adapterStatus : any;
     devicesStatus: Array<BleDevice>;
     deviceSt : DeviceStatus;
     timerValue : number,
-    sessionData? :Session
+    sessionData? :Session,
+    sessionTime : number
 }
 
 
@@ -82,6 +84,12 @@ export interface SendCommand {
     payload : ActionCommand
 }
 
+export interface SendCommands {
+    type: typeof SEND_COMMANDS;
+    payload : { actionCommands : ActionCommand[], time : number, eventInfo : {mode: number, frequency : number}}
+}
+
+
 export interface GetDeviceStatusData {
     type: typeof GET_DEVICESTATUS;
     payload : ActionCommand
@@ -112,6 +120,7 @@ export type BluetoothAdapterActionTypes =
     | SendAdapterStatusAction
     | SendTimerValues
     | DisconnectedSuccessAction
+    | ResetCommandTimer
 
 export interface StartScanDevicesAction {
     type: typeof START_SCAN_DEVICES
@@ -175,3 +184,7 @@ export interface SendTimerValues {
     payload : number
 }
 
+export interface ResetCommandTimer {
+    type: typeof RESET_COMMAND_TIMER
+    payload : number
+}

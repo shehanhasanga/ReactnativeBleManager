@@ -3,17 +3,29 @@ import {
     FETCH_SESSION_FINISHED,
     FetchSessionAction,
     FetchSessionFinished,
-    Session,
+    SAVE_SESSION,
+    SaveSessionAction,
+    Session, SessionEventTypes,
     START_SESSION,
     StartSessionAction,
     SYNC_COMMAND,
     SyncCommandWithDeviceAction,
+    TherapySession,
     UPDATE_ELAPSE_TIME,
     UPDATE_SESSION,
     UpdateElapseTimeAction,
     UpdateSessionAction
 } from "./session.types";
 
+
+export const saveSession = (
+    eventType : SessionEventTypes,  eventInfo : {mode: number, frequency : number}
+): SaveSessionAction => {
+    return {
+        type: SAVE_SESSION,
+        payload : {eventType : eventType,  eventInfo : eventInfo}
+    };
+};
 
 export const fetchSesstion = (
     deviceId: string,
